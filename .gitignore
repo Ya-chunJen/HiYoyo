@@ -1,0 +1,13 @@
+.DS_Store
+config.ini
+.vscode/
+bin/
+include/
+lib/
+pyvenv.cfg
+chatgpt/__pycache/
+log/*
+!log/.gitkeep
+snowboy/__pycache/
+snowboy/_snowboydetect.so
+speechmodules/__pycache/

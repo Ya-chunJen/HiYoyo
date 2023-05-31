@@ -15,7 +15,6 @@ class OpenAiChatGPT:
             openai.api_base = config['Azureopenai']['openai_api_base']
             openai.api_key = config['Azureopenai']['openai_api_key']
             self.gpt35_model = config['Azureopenai']['gpt35_deployment_name']
-            self.gpt4_model = config['Azureopenai']['gpt4_deployment_name']
         else:
             self.gpt35_model = "gpt-3.5-turbo"
 

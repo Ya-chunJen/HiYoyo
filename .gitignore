@@ -5,9 +5,13 @@ bin/
 include/
 lib/
 pyvenv.cfg
-chatgpt/__pycache/
+chatgpt/__pycache__/
+chatgpt/pycache/
 log/*
 !log/.gitkeep
-snowboy/__pycache/
+log/.gitkeep
+snowboy/pycache/
 snowboy/_snowboydetect.so
-speechmodules/__pycache/
+speechmodules/pycache/
+chatgpt/__pycache__/chatgpt.cpython-39.pyc
+snowboy/__pycache__/wakeword.cpython-39.pyc

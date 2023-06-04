@@ -12,4 +12,5 @@ snowboy/_snowboydetect.so
 speechmodules/pycache/
 chatgpt/__pycache__/chatgpt.cpython-39.pyc
 snowboy/__pycache__/wakeword.cpython-39.pyc
-log/*.json
+log/*
+!log/.gitkeep

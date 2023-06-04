@@ -14,8 +14,8 @@ class ChatGptMult:
 
     def chatmult(self,username,prompt,system_content="You are a helpful assistant"):
         # 用户ID文件路径
-        username_fpath = f"log/{username}.json"
-        username_fpath = os.path.join(os.getcwd(),username_fpath)
+        username_fpath = f"{username}.json"
+        username_fpath = os.path.join(os.getcwd(),"log",username_fpath)
         # 判断用户ID文件是不是存在，存在就读取，不存在就建立
         if os.path.exists(username_fpath):
             with open(username_fpath) as f:
@@ -39,6 +39,7 @@ class ChatGptMult:
 
         # 调用单轮会话的模块获取结果
         response_dit = chatgpt.chat(messages_thistime) #使用Azure的接口
+        # print(response_dit)
         
         # 将本次的回答和历史记录整合
         message.append(response_dit)

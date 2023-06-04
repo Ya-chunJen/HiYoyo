@@ -7,9 +7,6 @@ lib/
 pyvenv.cfg
 chatgpt/__pycache__/
 chatgpt/pycache/
-log/*
-!log/.gitkeep
-log/.gitkeep
 snowboy/pycache/
 snowboy/_snowboydetect.so
 speechmodules/pycache/

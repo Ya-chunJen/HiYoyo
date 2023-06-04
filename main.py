@@ -39,10 +39,12 @@ class Yoyo:
         self.username = self.robot_info[robot_index ]['username']  
         self.asr = AzureASR()
         self.tts = AzureTTS(self.robot_voice_name)
-        if config['Wakeword']['Picovoice_Api_Key'] == "":
-            self.wakeword = SnowboyWakeWord()         
+        if config['Wakeword']['WakeUpScheme'] == "Picovoice":
+            self.wakeword = PicoWakeWord()      
+        elif config['Wakeword']['WakeUpScheme'] == "Snowboy":
+            self.wakeword = SnowboyWakeWord()  
         else:
-            self.wakeword = PicoWakeWord()          
+            raise SystemExit("config.ini配置文件中，WakeUpScheme可选值只有：Picovoice和 Snowboy")
 
     def run(self):
         while True:

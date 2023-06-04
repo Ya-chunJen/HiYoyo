@@ -76,17 +76,20 @@ https://github.com/MedalCollector/Orator
 - Wakeword 目录下的 Snowboy_Model_Path 为snowboy唤醒词模型的文件路径，如：snowboy/resources/models/snowboy.umdl，这里是相对路径。
 - Wakeword 目录下的 Sensitivity 为唤醒词的灵敏度，同时适用于Picovoice和Snowboy两种方案。。
 
-#### 4、编译snowboy的文件（Windows环境不需要）
+#### 4、Windows环境使用Azure的语音接口
+Windows环境使用Azure的语音接口需要安装 Microsoft Visual C++ ，在[此页面](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170&preserve-view=true)下载并安装，可能需要重启。
+
+#### 5、编译snowboy的文件（Windows环境不需要）
 这一步非常重要，请按照[snowboy官方项目](https://github.com/Kitt-AI/snowboy/blob/master/README_ZH_CN.md)中的说明，编译生成 _ snowboydetect.so 文件后，将此文件复制粘贴到本项目的 snowboy 文件夹下。
 
-#### 5、snowboy自定义唤醒词（Windows环境不需要）
+#### 6、snowboy自定义唤醒词（Windows环境不需要）
 - snowboy/resources/models，文件下包含所有的snowboy官方的唤醒词模型。
 - 如果你想训练自己的唤醒词，可以在[此网站](https://snowboy.jolanrensen.nl/)训练生成。训练过程也很简单，录制三段录音并上传，训练成功后，会生成一个pmdl文件， 将此文件放在snowboy/resources/models目录下。
 - 在config.ini配置文件的[Snowboy]部分，Snowboy_Model_Path为唤醒词模型文件的路径，修改此处就可以修改为不同的唤醒词模式。
 - Sensitivity 值为唤醒词的灵敏度，取值范围为0到1，越接近0越需要准确的读取唤醒词，太低可能会比较难唤醒。越接近1越容易被唤醒，但是太高可能会误唤醒。
 
 
-#### 6、完善robot_info.json配置文件
+#### 7、完善robot_info.json配置文件
 - 本项目的支持多个身份的智能助手，只需要在robot_info.json文件中配置即可，默认的智能助理是xiaozhushou，如需修改默认的智能助手，可以在main.py中的 robot_model(self,robot_id="xiaozhushou") 函数中修改。
 - "username":"You",——和智能助手会话人的名称或姓名，用于以此来呈现和保存会话记录。
 - "robot_id":"xiaozhushou",——智能助手的id，用于进行智能助手的配置和切换。

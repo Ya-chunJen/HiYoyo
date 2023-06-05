@@ -5,7 +5,7 @@ import configparser
 import os
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), "config.ini"))
+config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 
 class AzureTTS:
     def __init__(self,Azure_Voice_Name="zh-CN-XiaoshuangNeural"):       

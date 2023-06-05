@@ -5,7 +5,7 @@ import os
 import configparser
 
 config = configparser.ConfigParser()
-config.read(f"{os.getcwd()}/config.ini")
+config.read(f"{os.getcwd()}/config.ini",encoding="UTF-8")
 
 class PicoWakeWord:
     def __init__(self):
@@ -21,8 +21,8 @@ class PicoWakeWord:
             self.porcupine = pvporcupine.create(
                 access_key=self.PICOVOICE_API_KEY,
                 keyword_paths = self.keyword_paths,
-                keywords= ['picovoice', 'hey barista', 'ok google', 'porcupine', 'pico clock', 'blueberry', 'terminator', 'hey siri', 'grapefruit', 'hey google', 'jarvis', 'computer', 'alexa', 'grasshopper', 'americano', 'bumblebee'],
-                sensitivities = [float(config['Wakeword']['Sensitivity'])]
+                keywords= ['picovoice', 'hey barista', 'ok google', 'porcupine', 'pico clock', 'blueberry', 'terminator', 'hey siri', 'grapefruit', 'hey google', 'jarvis', 'computer', 'alexa', 'grasshopper', 'americano', 'bumblebee']
+                # sensitivities = [float(config['Wakeword']['Sensitivity'])]
             )
         except ValueError:
             raise SystemExit("配件文件中没有配置Picovoice_Api_Key！")

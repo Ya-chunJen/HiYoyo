@@ -1,6 +1,7 @@
 import os
 import json
 from snowboy.wakeword import SnowboyWakeWord
+from picovoice.wakeword import PicoWakeWord
 from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
 from chatgpt.chatgptmult import ChatGptMult
@@ -35,36 +36,41 @@ class Yoyo:
         self.robot_voice_name = self.robot_info[robot_index ]['robot_voice_name']
         self.robot_reply_word = self.robot_info[robot_index ]['robot_reply_word']
         self.robot_system_content = self.robot_info[robot_index ]['robot_system_content']
-        self.username = self.robot_info[robot_index ]['username']
-        self.snowboywakeword = SnowboyWakeWord()
+        self.username = self.robot_info[robot_index ]['username']  
         self.asr = AzureASR()
         self.tts = AzureTTS(self.robot_voice_name)
+        if config['Wakeword']['WakeUpScheme'] == "Picovoice":
+            self.wakeword = PicoWakeWord()      
+        elif config['Wakeword']['WakeUpScheme'] == "Snowboy":
+            self.wakeword = SnowboyWakeWord()  
+        else:
+            raise SystemExit("config.ini配置文件中，WakeUpScheme可选值只有：Picovoice和 Snowboy")
 
     def run(self):
         while True:
-            isdetected = self.snowboywakeword.detect_wake_word()
-            if isdetected >= 0: 
+            isdetected = self.wakeword.detect_wake_word()
+            if isdetected >= 0:
                 print(f'{self.robot_name}:{self.robot_reply_word}')
                 self.tts.text2speech_and_play(self.robot_reply_word)
-            sleep = True
-            while sleep:         
-                q = self.asr.speech2text()
-                if q == None:
-                    sleep = False
-                else:
-                    robot_keyword = find_robot_keyword(q,self.robot_keywords_list)
-                    if robot_keyword == None:
-                        print(f'{self.username}:{q}')
-                        res = chatgptmult.chatmult(self.username,q,self.robot_system_content)
-                        print(f'{self.robot_name}(GPT)：{res}')
-                        self.tts.text2speech_and_play(res)   
+                sleep = True            
+                while sleep:         
+                    q = self.asr.speech2text()
+                    if q == None:
+                        sleep = False
                     else:
-                        switch_robot_index = self.robot_keywords_list.index(robot_keyword)
-                        switch_robot_id = self.robot_info[switch_robot_index]["robot_id"]
-                        self.robot_model(switch_robot_id)  
-                        print(f"已切换到「{robot_keyword}」,请用唤醒词重新唤醒。")
-                        self.tts.text2speech_and_play(f"已切换到「{robot_keyword}」,请用唤醒词重新唤醒。")
-                        sleep = False                                                
+                        robot_keyword = find_robot_keyword(q,self.robot_keywords_list)
+                        if robot_keyword == None:
+                            print(f'{self.username}:{q}')
+                            res = chatgptmult.chatmult(self.username,q,self.robot_system_content)
+                            print(f'{self.robot_name}(GPT)：{res}')
+                            self.tts.text2speech_and_play(res)   
+                        else:
+                            switch_robot_index = self.robot_keywords_list.index(robot_keyword)
+                            switch_robot_id = self.robot_info[switch_robot_index]["robot_id"]
+                            self.robot_model(switch_robot_id)  
+                            print(f"已切换到「{robot_keyword}」,请用唤醒词重新唤醒。")
+                            self.tts.text2speech_and_play(f"已切换到「{robot_keyword}」,请用唤醒词重新唤醒。")
+                            sleep = False                                                
 
     def loop(self,):
         while True:

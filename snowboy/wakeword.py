@@ -8,14 +8,14 @@ config.read(f"{os.getcwd()}/config.ini")
 
 class SnowboyWakeWord:
     def __init__(self):
-        self.model_path = os.path.join(os.getcwd(),config['Snowboy']['Snowboy_Model_Path'])
-        self.sensitivity = float(config['Snowboy']['Sensitivity'])
+        self.model_path = os.path.join(os.getcwd(),config['Wakeword']['Snowboy_Model_Path'])
+        self.sensitivity = float(config['Wakeword']['Sensitivity'])
         self.wake_word_detected = False
         self.detector = snowboydecoder.HotwordDetector(self.model_path, sensitivity=self.sensitivity)
 
     def detected(self):
         self.wake_word_detected = True
-        # snowboydecoder.play_audio_file(os.path.join(os.getcwd(),config['Snowboy']['Wake_Sound']))    
+        # snowboydecoder.play_audio_file(os.path.join(os.getcwd(),config['Wakeword']['Wake_Sound']))    
         self.detector.terminate()
 
     def detect_wake_word(self):

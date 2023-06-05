@@ -6,10 +6,9 @@ include/
 lib/
 pyvenv.cfg
 chatgpt/__pycache__/
-chatgpt/pycache/
-snowboy/pycache/
+snowboy/__pycache__/
+picovoice/__pycache__/
+speechmodules/__pycache__/
 snowboy/_snowboydetect.so
-speechmodules/pycache/
-chatgpt/__pycache__/chatgpt.cpython-39.pyc
-snowboy/__pycache__/wakeword.cpython-39.pyc
+
 log/*.json

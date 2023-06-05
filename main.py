@@ -1,14 +1,13 @@
 import os
 import json
-from snowboy.wakeword import SnowboyWakeWord
-from picovoice.wakeword import PicoWakeWord
+
 from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
 from chatgpt.chatgptmult import ChatGptMult
 import configparser
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), "config.ini"))
+config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 robot_info_file_path = os.path.join(os.getcwd(), "robot_info.json")
 chatgptmult = ChatGptMult()
 
@@ -20,7 +19,7 @@ def find_robot_keyword(s,lst):
 
 class Yoyo:
     def __init__(self):
-        with open(robot_info_file_path , 'r') as f:
+        with open(robot_info_file_path , 'r' ,encoding="UTF-8") as f:
             self.robot_info = json.load(f)
             self.robot_id_list = [d['robot_id'] for d in self.robot_info]
             self.robot_keywords_list = [d['robot_keyword'] for d in self.robot_info]
@@ -39,9 +38,11 @@ class Yoyo:
         self.username = self.robot_info[robot_index ]['username']  
         self.asr = AzureASR()
         self.tts = AzureTTS(self.robot_voice_name)
-        if config['Wakeword']['WakeUpScheme'] == "Picovoice":
+        if config['Wakeword']['WakeUpScheme'] == "Picovoice":            
+            from picovoice.wakeword import PicoWakeWord
             self.wakeword = PicoWakeWord()      
         elif config['Wakeword']['WakeUpScheme'] == "Snowboy":
+            from snowboy.wakeword import SnowboyWakeWord
             self.wakeword = SnowboyWakeWord()  
         else:
             raise SystemExit("config.ini配置文件中，WakeUpScheme可选值只有：Picovoice和 Snowboy")

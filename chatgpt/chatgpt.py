@@ -4,7 +4,7 @@ import sys
 import configparser
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), "config.ini"))
+config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 
 class OpenAiChatGPT:
     def __init__(self):

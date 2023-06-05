@@ -3,7 +3,7 @@ import configparser
 import os
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), "config.ini"))
+config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 audio_file_path = os.path.join(os.getcwd(), "speechfile/speech.wav")
 
 class AzureASR:

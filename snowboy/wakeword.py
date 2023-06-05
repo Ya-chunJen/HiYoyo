@@ -4,7 +4,7 @@ from . import snowboydecoder
 import configparser
 
 config = configparser.ConfigParser()
-config.read(f"{os.getcwd()}/config.ini")
+config.read(f"{os.getcwd()}/config.ini",encoding="UTF-8")
 
 class SnowboyWakeWord:
     def __init__(self):

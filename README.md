@@ -72,7 +72,7 @@ https://github.com/MedalCollector/Orator
 - AzureSpeech 目录下的 AZURE_REGION  为Azure 语音服务的区域，如：eastasia。
 - Wakeword 目录下的 WakeUpScheme 为唤醒词的方案配置，Windows只能采用Picovoice的方案，MacOS和Linux系统可以用Picovoice和Snowboy两种方案，默认为Picovoice方案。WakeUpScheme可选值有：Picovoice和 Snowboy
 - Wakeword 目录下的 Picovoice_Api_Key在Windows下为必选，在 https://picovoice.ai/ 注册登录获取。
-- Wakeword 目录下的 Picovoice_Model_Path 为在picovoice官网训练下载到的唤醒词文件相对路径，可留空。留空时可以用以下词汇唤醒：'picovoice', 'hey barista', 'ok google', 'porcupine', 'pico clock', 'blueberry', 'terminator', 'hey siri', 'grapefruit', 'hey google', 'jarvis', 'computer', 'alexa', 'grasshopper', 'americano', 'bumblebee'.
+- Wakeword 目录下的 Picovoice_Model_Path。在picovoice官网训练并下载到的唤醒词文件，将其放在picovoice目录下，获取相对路径，如picovoice/*********.ppn。Picovoice_Model_Path 可留空。留空时可以用以下词汇唤醒：'picovoice', 'hey barista', 'ok google', 'porcupine', 'pico clock', 'blueberry', 'terminator', 'hey siri', 'grapefruit', 'hey google', 'jarvis', 'computer', 'alexa', 'grasshopper', 'americano', 'bumblebee'。
 - Wakeword 目录下的 Snowboy_Model_Path 为snowboy唤醒词模型的文件路径，如：snowboy/resources/models/snowboy.umdl，这里是相对路径。
 - Wakeword 目录下的 Sensitivity 为唤醒词的灵敏度，同时适用于Picovoice和Snowboy两种方案。。
 

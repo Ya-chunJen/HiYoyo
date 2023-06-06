@@ -102,3 +102,11 @@ Windows环境使用Azure的语音接口需要安装 Microsoft Visual C++ ，在[
 
 ## 项目待办
 
+## 部署
+1、在Windows环境，可以将程序启动放在一个bat文件中，bat文件中有如下内容：
+```
+@echo off
+cd /d D:\gitee\HiYoyo
+rem 「D:\gitee\HiYoyo」为项目文件目录，需要根据你的目录进行修改
+python3 main.py
+```

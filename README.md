@@ -110,3 +110,11 @@ cd /d D:\gitee\HiYoyo
 rem 「D:\gitee\HiYoyo」为项目文件目录，需要根据你的目录进行修改
 python3 main.py
 ```
+2、在MacOS环境，可以将程序放在一个sh文件中，并可更改为双击启动：
+```
+#!/bin/bash
+cd /Users/renyajun/gitee/HiYoyo && python3 main.py  # /Users/renyajun/gitee/HiYoyos是项目目录，需要根据你的目录进行修改
+```
+（1）将此.sh文件的后缀修改为.command
+（2）右键「制作替身」，把创建的替身文件放在桌面，并可重命名
+（3）双击桌面的替身文件，即可启动程序。

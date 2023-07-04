@@ -38,6 +38,7 @@ class Yoyo:
         self.username = self.robot_info[robot_index ]['username']  
         self.asr = AzureASR()
         self.tts = AzureTTS(self.robot_voice_name)
+        self.tts.text2speech_and_play(f"开机广告时间，广告位长期招商！")
         self.stopword = config['Wakeword']['StopWord']
         if config['Wakeword']['WakeUpScheme'] == "Picovoice":            
             from picovoice.wakeword import PicoWakeWord
@@ -59,7 +60,7 @@ class Yoyo:
                     q = self.asr.speech2text()
                     if q == None or self.stopword in q:
                         print("system:已经进入睡眠模式！")
-                        self.tts.text2speech_and_play(f"我退下了，如需使用，请用唤醒词叫我。")
+                        self.tts.text2speech_and_play(f"拜拜，有事用唤醒词叫我。")
                         sleep = False
                     else:
                         robot_keyword = find_robot_keyword(q,self.robot_keywords_list)
@@ -86,5 +87,4 @@ class Yoyo:
 
 if __name__ == '__main__':
     yoyo = Yoyo()
-    yoyo.robot_model()
     yoyo.loop()

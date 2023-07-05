@@ -5,7 +5,7 @@
         "robot_name":"小助手",
         "robot_keyword":"智能助手模式",
         "robot_describe":"一个智能助手",
-        "robot_voice_name":"zh-CN-XiaochenNeural",
+        "robot_voice_name":"XiaoshuangNeural",
         "robot_reply_word":"嗯，你好！",
         "robot_system_content":"你是一个有用的智能助手"
     },

@@ -24,7 +24,7 @@ class Yoyo:
             self.robot_id_list = [d['robot_id'] for d in self.robot_info]
             self.robot_keywords_list = [d['robot_keyword'] for d in self.robot_info]
 
-    def robot_model(self,robot_id="xiaozhushou"):
+    def robot_model(self,robot_id="yoyo"):
         try:
             robot_index = self.robot_id_list.index(robot_id)
         except ValueError:

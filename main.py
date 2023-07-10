@@ -84,8 +84,8 @@ class Yoyo:
                             switch_robot_index = self.robot_keywords_list.index(robot_keyword)
                             switch_robot_id = self.robot_info[switch_robot_index]["robot_id"] # 确定要切换到哪一个智能语音助手。
                             self.robot_model(switch_robot_id)   #切换智能语音助手。
-                            print(f"system:已切换到「{robot_keyword}」,请用唤醒词重新唤醒我。")
-                            self.tts.text2speech_and_play(f"已切换到「{robot_keyword}」,请用唤醒词重新唤醒我。")
+                            print(f"system:已切换到「{robot_keyword}」。")
+                            self.tts.text2speech_and_play(f"已切换到「{robot_keyword}」")
                             # keepawake = False #原本切换智能语音助手后需要重新唤醒，现在应该不需要了。                                           
 
     def loop(self,):

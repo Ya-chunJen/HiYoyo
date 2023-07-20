@@ -12,8 +12,8 @@ robot_info_file_path = os.path.join(os.getcwd(), "robot_info.json")
 chatgptmult = ChatGptMult()
 
 # 增加程序启动时的开机广告，并且告知用户智能音箱的唤醒词。
-print(f"system:开机广告时间，广告位长期招商！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
-AzureTTS("zh-CN-XiaoxiaoNeural").text2speech_and_play(f"开机广告时间，广告位长期招商！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
+print(f"system:叮叮当当！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
+AzureTTS("zh-CN-XiaoxiaoNeural").text2speech_and_play(f"叮叮当当！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
 
 # 这是用于判断一个字符串中，是不是包含一个列表中的任意词，如果包含就会返回列表中的这个元素。
 # 实际业务上，是判断语音转为文字的内容，是不是包含任意一个智能语音助手的激活关键词。

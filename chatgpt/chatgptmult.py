@@ -4,7 +4,7 @@ import json
 import os
 import copy
 from .chatgpt import OpenAiChatGPT
-
+from . import azureopenaifunctionplugin
 
 chatgpt = OpenAiChatGPT()
 
@@ -38,7 +38,7 @@ class ChatGptMult:
             # print(messages_thistime)
 
         # 调用单轮会话的模块获取结果
-        response_dit = chatgpt.chat(messages_thistime) #使用Azure的接口
+        response_dit = azureopenaifunctionplugin.chatGPT_with_plugin(messages_thistime) #使用Azure的接口
         # print(response_dit)
         
         # 将本次的回答和历史记录整合

@@ -1,0 +1,48 @@
+[
+    {
+        "name": "sendemail",
+        "description": "此函数可以发送邮件。",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "mail_to": {
+                    "type": "string",
+                    "description": "目标邮箱，如:569906497@qq.com"
+                },
+                "mail_subject": {
+                    "type": "string", 
+                    "description": "邮件的主题，默认为「Openai的自动发出的邮件」"
+                },
+                "mail_body_text": {
+                    "type": "string", 
+                    "description": "邮件的正文内容。"
+                }
+            },
+            "required": ["mail_to","mail_body_text"]
+        }
+    },
+    {
+        "name": "querytime",
+        "description": "可以查询当前的准确时间。",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            },
+            "required": []
+        }
+    },
+    {
+        "name": "webbrowse",
+        "description": "可以使用浏览器打开一个网页。",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "要打开网页的URL地址。"
+                }
+            },
+            "required": ["url"]
+        }
+    }
+]

@@ -12,3 +12,4 @@ speechmodules/__pycache__/
 snowboy/_snowboydetect.so
 log/*
 !log/.gitkeep
+chatgpt/functionplugin/__pycache__

@@ -1,8 +1,9 @@
 import os
 import datetime
 import pytz
+import json
 
-def querytime(querytime):
+def querytime(function_args):
     current_time = datetime.datetime.now()
     tz = pytz.timezone('Asia/Shanghai')
     # 获取周几
@@ -12,4 +13,4 @@ def querytime(querytime):
     nowtime = '{} {} {}'.format(current_time.strftime('%Y-%m-%d %H:%M:%S'), weekday, tz.tzname(current_time))
     # print(nowtime)
     callback_json =  {"request_gpt_again":True,"details":f"<参考信息>：现在的详细时间是：{nowtime}"}
-    return callback_json
+    return json.dumps(callback_json)

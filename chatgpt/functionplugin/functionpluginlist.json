@@ -2,28 +2,30 @@
     {
         "name": "sendemail",
         "description": "此函数可以发送邮件给联系人。",
+        "keyword":"使用邮件插件",
         "parameters": {
             "type": "object",
             "properties": {
                 "mail_to_name": {
                     "type": "string",
-                    "description": "联系人的姓名，如：张三。"
+                    "description": "联系人的姓名。"
                 },
                 "mail_subject": {
                     "type": "string", 
-                    "description": "邮件的主题，默认为「Openai的自动发出的邮件」"
+                    "description": "邮件的主题。"
                 },
                 "mail_body_text": {
                     "type": "string", 
                     "description": "邮件的正文内容。"
                 }
             },
-            "required": ["mail_to_name","mail_body_text"]
+            "required": ["mail_to_name","mail_subject","mail_body_text"]
         }
     },
     {
         "name": "querytime",
         "description": "可以查询当前的准确时间。",
+        "keyword":"使用时间插件",
         "parameters": {
             "type": "object",
             "properties": {
@@ -34,6 +36,7 @@
     {
         "name": "webbrowse",
         "description": "可以使用浏览器打开一个网页。",
+        "keyword":"使用联网插件",
         "parameters": {
             "type": "object",
             "properties": {

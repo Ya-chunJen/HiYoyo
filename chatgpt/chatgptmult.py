@@ -6,7 +6,7 @@ import copy
 from .chatgpt import OpenAiChatGPT
 from . import azureopenaifunctionplugin
 
-chatgpt = OpenAiChatGPT()
+# chatgpt = OpenAiChatGPT()
 
 class ChatGptMult:
     def __init__(self):

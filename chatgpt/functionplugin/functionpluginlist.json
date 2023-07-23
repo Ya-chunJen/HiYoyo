@@ -1,13 +1,13 @@
 [
     {
         "name": "sendemail",
-        "description": "此函数可以发送邮件。",
+        "description": "此函数可以发送邮件给联系人。",
         "parameters": {
             "type": "object",
             "properties": {
-                "mail_to": {
+                "mail_to_name": {
                     "type": "string",
-                    "description": "目标邮箱，如:569906497@qq.com"
+                    "description": "联系人的姓名，如：张三。"
                 },
                 "mail_subject": {
                     "type": "string", 
@@ -18,7 +18,7 @@
                     "description": "邮件的正文内容。"
                 }
             },
-            "required": ["mail_to","mail_body_text"]
+            "required": ["mail_to_name","mail_body_text"]
         }
     },
     {

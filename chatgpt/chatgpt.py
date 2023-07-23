@@ -11,7 +11,7 @@ class OpenAiChatGPT:
         openai.api_key = config['Openai']['openai_api_key']
         if openai.api_key == "sk-":
             openai.api_type = "azure"
-            openai.api_version = "2023-03-15-preview"
+            openai.api_version = config['Azureopenai']['openai_api_version']
             openai.api_base = config['Azureopenai']['openai_api_base']
             openai.api_key = config['Azureopenai']['openai_api_key']
             self.gpt35_model = config['Azureopenai']['gpt35_deployment_name']

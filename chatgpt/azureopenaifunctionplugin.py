@@ -24,6 +24,16 @@ def find_values_by_index(list1, list2, index):
             result = list2[i]
     return result
 
+def filter_dict_array(dict_array, key, val):
+    """
+    过滤数组中key为指定值的字典元素
+    """
+    result = []
+    for d in dict_array:
+        if d.get(key) == val:
+            result.append(d)
+    return result
+
 # 不能函数功能时，仅简单调用。
 def chatGPT(prompt_messages):
     completion = openai.ChatCompletion.create(
@@ -53,16 +63,25 @@ def chatGPT_with_plugin(prompt_messages,function_call="none"):
         if function_keyword in prompt_messages[-1]["content"] or function_keyword in prompt_messages[-2]["content"]:
             function_name = find_values_by_index(function_keyword_list,function_name_list,function_keyword)
             function_call = function_name
+            global functions
+            print("所有的插件：")
+            print(functions)
+            if not(function_name=="auto"):
+                functions = filter_dict_array(functions,"name",function_name['name'])
+            print("过滤后的插件：")
+            print(functions)
             prompt_messages[-1]["content"] = prompt_messages[-1]["content"].replace(function_keyword, "")
             prompt_messages[-2]["content"] = prompt_messages[-2]["content"].replace(function_keyword, "")
-            prompt_messages[0]["content"] = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
+            prompt_messages[0]["content"] = "不要假设或虚构任何arguments字段中的值，如果需要更多内容，请想我索要或确认。"
             break
     
     if function_call == "none" :
         # 如果function_call还是为none，那就调用一次简单的chatGPT函数，不带任何函数功能。
+        print("不需要调用任何的插件。简单请求一次GPT")
         response_message = chatGPT(prompt_messages)
         return response_message
     
+    print("调用函数前的prompt_message")
     print(prompt_messages)
     completion = openai.ChatCompletion.create(
         deployment_id = modelname,
@@ -72,9 +91,10 @@ def chatGPT_with_plugin(prompt_messages,function_call="none"):
     )
     response_message = completion['choices'][0]['message'].to_dict() # type: ignore
     response_message.setdefault('content', None) # 如果调用了函数，返回值是没有content的。但是随后再次提交，还需要content值。所以需要插入一个空值。
-    # print(response_message)
+    print(response_message)
 
     if response_message.get("function_call"):
+        print("首次调用GPT，返回了JSON格式的数据。")
         response_message['function_call'] = response_message['function_call'].to_dict()
         function_name = response_message['function_call']['name']
         function_args_str = response_message['function_call']['arguments']
@@ -92,6 +112,7 @@ def chatGPT_with_plugin(prompt_messages,function_call="none"):
         function_response = json.loads(function_response_str)
         
         if function_response['request_gpt_again']:
+            print("调用插件后，插件要求再调用一次GPT。")
             # 调用函数后，函数会返回是否再调用一次的字段，以下部分是需要再次调用GPT的场景。
             # print(function_response['details'])
             prompt_messages.append(response_message)
@@ -102,22 +123,27 @@ def chatGPT_with_plugin(prompt_messages,function_call="none"):
                     "content": function_response_str,
                 }
             )
+            print("再次调用插件时的，prompt_messages")
+            prompt_messages[0]["content"] = "你是一个有用的智能助手。"
             print(prompt_messages)
             second_response = chatGPT(prompt_messages) #再次请求一次无函数调用功能的chatGPT
+            print("再次调用一次GPT返回的结果。")
             print(second_response)
             return second_response
         else:
             # 调用函数后，函数会返回是否再调用一次的字段，以下部分是不需要再次调用GPT的场景，在这种条件下，可以将函数返回的内容直接返回给终端用户。
+            print("调用插件后，插件不要求再次调用GPT，插件直接返回了结果。")
             second_response= {"role":"assistant","content":function_response['details']}
             return second_response
     else:
         # 虽然明确要求使用函数插件，但是因为信息不足等原因，还是直接返回了面向终端用户的信息。
+        print("虽然要求调用了插件，但是GPT还是返回了直接面向终端用户的信息，表示现有的信息不足以按插件要求返回JSON数据。")
         response_message['content'] = function_keyword + response_message['content']
         return response_message
 
 if __name__ == '__main__':
-    # prompt = input("请输入你的问题：")
-    prompt = "请问现在几点了。"
+    prompt = input("请输入你的问题：")
+    # prompt = "请问现在几点了。"
     # prompt = "querytime插件 打开百度首页。"
     # prompt = "auto插件 请给任亚军发一封邮件，主题是「谢谢你的款待」，正文是「真的非常感谢」"
     # prompt = "auto插件 请发一封邮件。"

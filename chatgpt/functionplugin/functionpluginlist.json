@@ -47,5 +47,16 @@
             },
             "required": ["url"]
         }
+    },
+    {
+        "name": "wjxwjlist",
+        "description": "可以查询在问卷星创建的问卷列表。",
+        "keyword":"使用问卷星插件",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            },
+            "required": []
+        }
     }
 ]

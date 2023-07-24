@@ -3,8 +3,8 @@ import os
 import json
 import os
 import copy
-from .chatgpt import OpenAiChatGPT
-from . import azureopenaifunctionplugin
+from chatgpt import OpenAiChatGPT
+import azureopenaifunctionplugin
 
 # chatgpt = OpenAiChatGPT()
 
@@ -39,6 +39,7 @@ class ChatGptMult:
 
         # 调用单轮会话的模块获取结果
         response_dit = azureopenaifunctionplugin.chatGPT_with_plugin(messages_thistime) #使用Azure的接口
+        # response_dit = azureopenaifunctionplugin.chatGPT(messages_thistime) #使用Azure的接口
         # print(response_dit)
         
         # 将本次的回答和历史记录整合
@@ -53,14 +54,8 @@ class ChatGptMult:
         return response_content
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        if len(sys.argv) == 3:
-            username = sys.argv[1]   
-            prompt =  sys.argv[2]
-            system_content = "You are a helpful assistant"
-        if len(sys.argv)==4:
-            username = sys.argv[1]   
-            prompt =  sys.argv[2]
-            system_content = sys.argv[3] 
-        chatgptmult = ChatGptMult()
-        chatgptmult.chatmult(username,prompt,system_content)
+    system_content =  "你是一个有用的智能助手。"
+    username = "1"
+    prompt =  input("请输入你的问题：")
+    chatgptmult = ChatGptMult()
+    chatgptmult.chatmult(username,prompt,system_content)

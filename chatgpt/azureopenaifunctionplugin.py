@@ -38,21 +38,32 @@ def chatGPT(prompt_messages):
 funnctionpluginlist_file_path = os.path.join(os.getcwd(),"chatgpt","functionplugin","functionpluginlist.json")
 with open(funnctionpluginlist_file_path, 'r' ,encoding="UTF-8") as f:
     functions = json.load(f)  
-    function_names = [function['name'] for function in functions] #读取所有的函数插件的名称，形成一个列表。
-    function_keywords = [function['keyword'] for function in functions]  #读取所有函数的激活关键词，形成一个列表。
+    function_name_list = [function['name'] for function in functions] # 读取所有的函数插件的名称，形成一个列表。
+    function_name_list = [{'name': item} for item in function_name_list] # 将函数名称变为{'name': '***'}的示例。
+    function_name_list.append("auto") # 追加一个特殊的auto模式，auto模式是一个字符串。
+
+    function_keyword_list = [function['keyword'] for function in functions]  #读取所有函数的激活关键词，形成一个列表。
+    function_keyword_list.append("全部插件") # 追加一个auto特殊的模式。
+    # print(function_name_list)
+    # print(function_keyword_list)
 
 def chatGPT_with_plugin(prompt_messages,function_call="none"):
     # 根据prompt_messages中包含的关键词，决定调用具体哪一个函数插件。全部插件是一个特殊的模式。
-    for function_keyword in function_keywords:
-        if function_keyword in prompt_messages[-1]["content"]:
-            function_name = find_values_by_index(function_keywords,function_names,function_keyword)
-            function_call = {"name": function_name}
+    for function_keyword in function_keyword_list:
+        if function_keyword in prompt_messages[-1]["content"] or function_keyword in prompt_messages[-2]["content"]:
+            function_name = find_values_by_index(function_keyword_list,function_name_list,function_keyword)
+            function_call = function_name
             prompt_messages[-1]["content"] = prompt_messages[-1]["content"].replace(function_keyword, "")
+            prompt_messages[-2]["content"] = prompt_messages[-2]["content"].replace(function_keyword, "")
+            prompt_messages[0]["content"] = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
             break
-    if function_call == "none" and "全部插件" in prompt_messages[-1]["content"]:
-        function_call = "auto"
-        prompt_messages[-1]["content"] = prompt_messages[-1]["content"].replace("全部插件", "")
     
+    if function_call == "none" :
+        # 如果function_call还是为none，那就调用一次简单的chatGPT函数，不带任何函数功能。
+        response_message = chatGPT(prompt_messages)
+        return response_message
+    
+    print(prompt_messages)
     completion = openai.ChatCompletion.create(
         deployment_id = modelname,
         messages = prompt_messages,
@@ -91,15 +102,17 @@ def chatGPT_with_plugin(prompt_messages,function_call="none"):
                     "content": function_response_str,
                 }
             )
-            # print(prompt_messages)
+            print(prompt_messages)
             second_response = chatGPT(prompt_messages) #再次请求一次无函数调用功能的chatGPT
-            # print(second_response)
+            print(second_response)
             return second_response
         else:
             # 调用函数后，函数会返回是否再调用一次的字段，以下部分是不需要再次调用GPT的场景，在这种条件下，可以将函数返回的内容直接返回给终端用户。
             second_response= {"role":"assistant","content":function_response['details']}
             return second_response
     else:
+        # 虽然明确要求使用函数插件，但是因为信息不足等原因，还是直接返回了面向终端用户的信息。
+        response_message['content'] = function_keyword + response_message['content']
         return response_message
 
 if __name__ == '__main__':
@@ -108,6 +121,10 @@ if __name__ == '__main__':
     # prompt = "querytime插件 打开百度首页。"
     # prompt = "auto插件 请给任亚军发一封邮件，主题是「谢谢你的款待」，正文是「真的非常感谢」"
     # prompt = "auto插件 请发一封邮件。"
-    messages=[{"role":"system","content":"You are a helpful assistant"},{"role": "user", "content":prompt}]
+    system_content = "你是一个有用的智能助手。"
+    messages=[{"role":"system","content":system_content},{"role": "user", "content":prompt}]
     result = chatGPT_with_plugin(messages)
     print(result['content'])
+
+
+    

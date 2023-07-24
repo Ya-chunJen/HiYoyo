@@ -58,5 +58,20 @@
             },
             "required": []
         }
+    },
+    {
+        "name": "posttoqw",
+        "description": "可以将一个字符串推送到一个企业微信群中。",
+        "keyword":"使用企业微信插件",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "要推送到企业微信群中的消息。"
+                }
+            },
+            "required": ["text"]
+        }
     }
 ]

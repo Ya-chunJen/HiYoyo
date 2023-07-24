@@ -3,8 +3,8 @@ import os
 import json
 import os
 import copy
-from chatgpt import OpenAiChatGPT
-import azureopenaifunctionplugin
+# from chatgpt import OpenAiChatGPT
+from . import azureopenaifunctionplugin
 
 # chatgpt = OpenAiChatGPT()
 

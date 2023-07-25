@@ -55,8 +55,12 @@
         "parameters": {
             "type": "object",
             "properties": {
+                "days": {
+                    "type": "integer",
+                    "description": "要查询最近几天的数据，比如为数字"
+                }
             },
-            "required": []
+            "required": ["days"]
         }
     },
     {

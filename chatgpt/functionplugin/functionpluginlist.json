@@ -23,6 +23,30 @@
         }
     },
     {
+        "name": "wjxanalysis",
+        "description": "可以在问卷星系统中执行数据分析，目前支持的分析方法有：频率分析、交叉分析。每次可以执行多个分析。",
+        "keyword":"使用问卷星分析的插件",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "analytical_id": {
+                    "type": "string",
+                    "description": "每次可以执行多个分析，此字段依次生成"
+                },
+                "analytical_methods": {
+                    "type": "string",
+                    "enum": ["频率分析", "交叉分析"],
+                    "description": ""
+                },
+                "analysis_questions": {
+                    "type": "string", 
+                    "description": "邮件的主题。"
+                }
+            },
+            "required": ["mail_to_name","mail_subject","mail_body_text"]
+        }
+    },
+    {
         "name": "querytime",
         "description": "可以查询当前的准确时间。",
         "keyword":"使用时间插件",

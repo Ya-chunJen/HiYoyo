@@ -44,10 +44,12 @@ https://github.com/MedalCollector/Orator
 - main.py，程序的主文件
 - config_example.ini，配置文件信息，用于存放需要调用一些接口的key信息，完全配置后，需要将文件名改为config.ini
 - robot_info.json，智能助手的配置信息，理论上可以配置无限多个，相当于你有无限多个智能助手
+- functionpluginlist.json，插件的配置文件
 - requirements.txt，项目需要安装的依赖
 - speechmodules/speech2text.py，语音转文字功能程序
 - speechmodules/text2speech.py，文字转语音功能程序
-- chatgpt/chatgpt.py，不论Openai官方版本还是Azrue版本的单轮请求程序
+- chatgpt/chatgptsingle.py，不论Openai官方版本还是Azrue版本的单轮请求程序
+- chatgpt/chatgptfunction.py，用于执行chatgpt的函数调用
 - chatgpt/chatgptmult.py，用于存储保留多轮规划的chatgpt程序
 - log文件夹，用于存储多轮会话的文件，每个会话人就是一个json文件
 - snowboy/wakeword.py，snowboy唤醒词程序
@@ -99,9 +101,18 @@ Windows环境使用Azure的语音接口需要安装 Microsoft Visual C++ ，在[
 - "robot_voice_name":"zh-CN-XiaochenNeural",——智能助手的嗓音名称，嗓音是智能助手最外显的一个特征，使用的是Azure的接口，可用嗓音见[链接1](https://learn.microsoft.com/zh-cn/azure/cognitive-services/speech-service/language-support?tabs=tts) ,[链接2](https://speech.azure.cn/portal/voicegallery)。
 - "robot_reply_word":"嗯，你好！",——唤醒智能助手后的，智能助手打招呼的内容。
 - "robot_system_content":"你是一个有用的智能助手"——作为一个有身份的智能助手，这里是请求ChatGPT接口时，定义的system。更多身份的prompt可以见[此项目](https://github.com/PlexPt/awesome-chatgpt-prompts-zh/blob/main/prompts-zh-TW.json)
+- "robot_function_model":"none"，——这个智能助手可以使用的插件，插件是在functionpluginlist.json文件中定义的。none表示不使用任何插件，auto是使用全部插件（不推荐使用，所有插件在一起的内容太多），想使用哪一个插件，就写插件的name。只要插件的name包含这里定义的内容，就会调用对应的插件。所以也是可以使用多个插件的，只要多个插件的name中，都包含这里定义的内容。
+
+#### 8、完善插件程序和配置文件
+1、开发的插件，应该放在chatgpt/functionplugin目录下；
+2、插件应该返回标准额JSON格式数据，如{"request_gpt_again":False,"details":f"已将消息推送到企业微信群。"}，其中：request_gpt_again代表，是否在插件执行完后，再请求一次ChatGPT，为布尔型数据。details代表，插件返回的详细信息。
+3、插件名称、插件对应的程序模块、程序模块中的函数都必须使用完全一致的名称。
+4、程序模块中的函数只能接受function_args这一个参数，且这个参数是json类型，更多参数可以写在字典内部。
+5、functionpluginlist.json是插件的配置文件，参数要求可参考openai的官方文档：[关于Function Call](https://platform.openai.com/docs/guides/gpt/function-calling) 。
+6、相比openai的官方文档，我增加了一个“keyword”的字段，本来是用于通过语音关键词，触发特定的插件。
 
 ## 项目待办
-
+ 
 ## 部署
 1、在Windows环境，可以将程序启动放在一个bat文件中，bat文件中有如下内容：
 ```
@@ -116,5 +127,6 @@ python3 main.py
 cd /Users/renyajun/gitee/HiYoyo && python3 main.py  # /Users/renyajun/gitee/HiYoyos是项目目录，需要根据你的目录进行修改
 ```
 （1）将此.sh文件的后缀修改为.command
+（2）给这个.command授予权限：sudo chmod 777 "文件路径"
 （2）右键「制作替身」，把创建的替身文件放在桌面，并可重命名
 （3）双击桌面的替身文件，即可启动程序。

@@ -73,18 +73,18 @@
         }
     },
     {
-        "name": "webbrowse",
-        "description": "可以使用浏览器打开一个网页。",
-        "keyword":"使用联网插件",
+        "name": "macshell",
+        "description": "此插件可以执行任何Mac环境下的终端命令。",
+        "keyword":"",
         "parameters": {
             "type": "object",
             "properties": {
-                "url": {
+                "commands": {
                     "type": "string",
-                    "description": "要打开网页的URL地址。"
+                    "description": "要执行的终端命令。"
                 }
             },
-            "required": ["url"]
+            "required": ["commands"]
         }
     },
     {

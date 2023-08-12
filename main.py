@@ -43,7 +43,9 @@ class Yoyo:
         self.robot_voice_name = self.robot_info[robot_index ]['robot_voice_name']
         self.robot_reply_word = self.robot_info[robot_index ]['robot_reply_word']
         self.robot_system_content = self.robot_info[robot_index ]['robot_system_content']
-        self.username = self.robot_info[robot_index ]['username']  
+        self.username = self.robot_info[robot_index ]['username']
+        self.robot_function_model = self.robot_info[robot_index ]['robot_function_model']
+
         self.asr = AzureASR()
         self.tts = AzureTTS(self.robot_voice_name)
         self.stopword = config['Wakeword']['StopWord']
@@ -75,11 +77,11 @@ class Yoyo:
                         keepawake = False
                     else:
                         robot_keyword = find_robot_keyword(q,self.robot_keywords_list) #判断用户录入的内容是不是包含任意一个智能语音助手的激活关键词。如果不包含，就请求ChatGPT的结果。如果包含，就切换到对应的智能语音助手。
-                        if robot_keyword == None:                          
+                        if robot_keyword == None:
                             print(f'{self.username}:{q}') # 打印用户录入的内容
-                            res = chatgptmult.chatmult(self.username,q,self.robot_system_content) # 请求ChatGPT的接口。
+                            res = chatgptmult.chatmult(self.username,q,self.robot_system_content,self.robot_function_model,self.robot_voice_name) # 请求ChatGPT的接口。
                             print(f'{self.robot_name}(GPT)：{res}')   # 打印返回的结果。
-                            self.tts.text2speech_and_play(res)   # 朗读返回的结果。
+                            # self.tts.text2speech_and_play(res)   # 朗读返回的结果。
                         else:
                             switch_robot_index = self.robot_keywords_list.index(robot_keyword)
                             switch_robot_id = self.robot_info[switch_robot_index]["robot_id"] # 确定要切换到哪一个智能语音助手。

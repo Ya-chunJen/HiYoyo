@@ -1,5 +1,20 @@
 [
     {
+        "name": "search",
+        "description": "使用这个函数，可以联网进行在线搜索。",
+        "keyword":"使用搜索插件",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "q": {
+                    "type": "string",
+                    "description": "搜索关键词。"
+                }
+            },
+            "required": ["q"]
+        }
+    },
+    {
         "name": "sendemail",
         "description": "此函数可以发送邮件给联系人。",
         "keyword":"使用邮件插件",

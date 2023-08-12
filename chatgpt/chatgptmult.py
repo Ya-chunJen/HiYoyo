@@ -1,18 +1,18 @@
-import sys
 import os
 import json
 import os
 import copy
-# from chatgpt import OpenAiChatGPT
-from . import azureopenaifunctionplugin
+from . import chatgptsingle
+from . import chatgptfunction
 
-# chatgpt = OpenAiChatGPT()
+chatgptsingle = chatgptsingle.ChatGptSingle()
+chatgptfunction = chatgptfunction.ChatGptFunction()
 
 class ChatGptMult:
     def __init__(self):
         pass
 
-    def chatmult(self,username,prompt,system_content="You are a helpful assistant"):
+    def chatmult(self,username,prompt,system_content="You are a helpful assistant",functionname="none",voice_name="zh-CN-XiaoxiaoNeural"):
         # 用户ID文件路径
         username_fpath = f"{username}.json"
         username_fpath = os.path.join(os.getcwd(),"log",username_fpath)
@@ -38,10 +38,11 @@ class ChatGptMult:
             # print(messages_thistime)
 
         # 调用单轮会话的模块获取结果
-        response_dit = azureopenaifunctionplugin.chatGPT_with_plugin(messages_thistime) #使用Azure的接口
-        # response_dit = azureopenaifunctionplugin.chatGPT(messages_thistime) #使用Azure的接口
-        # print(response_dit)
+        # response_dit = chatgptsingle.chat(messages_thistime,voice_name) #使用Azure的接口
+        # 调用支持函数的单轮会话模块获取结果。
+        response_dit = chatgptfunction.chat_with_funciton(messages_thistime,functionname,voice_name) 
         
+        # print(response_dit)
         # 将本次的回答和历史记录整合
         message.append(response_dit)
 
@@ -54,8 +55,9 @@ class ChatGptMult:
         return response_content
 
 if __name__ == '__main__':
-    system_content =  "你是一个有用的智能助手。"
     username = "1"
     prompt =  input("请输入你的问题：")
+    system_content = "你是一个有用的智能助手。"
+    functionname = "none"
     chatgptmult = ChatGptMult()
-    chatgptmult.chatmult(username,prompt,system_content)
+    chatgptmult.chatmult(username,prompt,system_content,functionname)

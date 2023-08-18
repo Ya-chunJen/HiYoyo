@@ -25,9 +25,8 @@ def send(mail_to,mail_subject,message):
     smtpobj.quit() #退出邮箱
 
 contacts = [
-    {'name':"任亚军",'email':"renyajun@wjx.cn"},
-    {'name':"任雅君",'email':"renyajun@wjx.cn"},
-    {'name':"陶双",'email':"renyajun1990@gmail.com"}
+    {'name':"张三",'email':"zhangsan@qq.cn"},
+    {'name':"李四",'email':"lisi@qq.cn"}
 ]
 
 def sendemail(function_args):
@@ -55,7 +54,7 @@ def sendemail(function_args):
 
 if __name__ == '__main__':
     message_body = """{
-        "mail_to_name":"任亚军",
+        "mail_to_name":"张三",
         "mail_subject":"我已安全到家！",
         "mail_body_text":"我已安全到家，勿念。"
     }

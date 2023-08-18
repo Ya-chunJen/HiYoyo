@@ -116,14 +116,15 @@ Windows环境使用Azure的语音接口需要安装 Microsoft Visual C++ ，在[
 - 函数调用支持调用硬件
  
 ## 部署
-1、在Windows环境，可以将程序启动放在一个bat文件中，bat文件中有如下内容：
+1. 在Windows环境，可以将程序启动放在一个bat文件中，bat文件中有如下内容：
 ```
 @echo off
 cd /d D:\gitee\HiYoyo
 rem 「D:\gitee\HiYoyo」为项目文件目录，需要根据你的目录进行修改
 python3 main.py
 ```
-2、在MacOS环境，可以将程序放在一个sh文件中，并可更改为双击启动：
+
+2. 在MacOS环境，可以将程序放在一个sh文件中，并可更改为双击启动：
 ```
 #!/bin/bash
 cd /Users/renyajun/gitee/HiYoyo && python3 main.py  # /Users/renyajun/gitee/HiYoyos是项目目录，需要根据你的目录进行修改

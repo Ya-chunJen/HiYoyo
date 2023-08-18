@@ -5,7 +5,7 @@
         "robot_name":"小助手",
         "robot_keyword":"小助手模式",
         "robot_describe":"默认模式，一个智能小助手",
-        "robot_voice_name":"zh-CN-XiaoshuangNeural",
+        "robot_voice_name":"zh-CN-XiaoxiaoNeural",
         "robot_reply_word":"嗯，你好！",
         "robot_system_content":"你的名字叫Yoyo，是一个语音智能助手。和我对话时，回答字数控制在100个字以内。",
         "robot_function_model":"none"

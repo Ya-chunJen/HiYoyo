@@ -105,10 +105,15 @@ Windows环境使用Azure的语音接口需要安装 Microsoft Visual C++ ，在[
 
 #### 8、完善插件程序和配置文件
 1、开发的插件，应该放在chatgpt/functionplugin目录下；
+
 2、插件应该返回标准额JSON格式数据，如{"request_gpt_again":False,"details":f"已将消息推送到企业微信群。"}，其中：request_gpt_again代表，是否在插件执行完后，再请求一次ChatGPT，为布尔型数据。details代表，插件返回的详细信息。
+
 3、插件名称、插件对应的程序模块、程序模块中的函数都必须使用完全一致的名称。
+
 4、程序模块中的函数只能接受function_args这一个参数，且这个参数是json类型，更多参数可以写在字典内部。
+
 5、functionpluginlist.json是插件的配置文件，参数要求可参考openai的官方文档：[关于Function Call](https://platform.openai.com/docs/guides/gpt/function-calling) 。
+
 6、相比openai的官方文档，我增加了一个“keyword”的字段，本来是用于通过语音关键词，触发特定的插件。
 
 ## 项目待办

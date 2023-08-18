@@ -104,19 +104,16 @@ Windows环境使用Azure的语音接口需要安装 Microsoft Visual C++ ，在[
 - "robot_function_model":"none"，——这个智能助手可以使用的插件，插件是在functionpluginlist.json文件中定义的。none表示不使用任何插件，auto是使用全部插件（不推荐使用，所有插件在一起的内容太多），想使用哪一个插件，就写插件的name。只要插件的name包含这里定义的内容，就会调用对应的插件。所以也是可以使用多个插件的，只要多个插件的name中，都包含这里定义的内容。
 
 #### 8、完善插件程序和配置文件
-1、开发的插件，应该放在chatgpt/functionplugin目录下；
-
-2、插件应该返回标准额JSON格式数据，如{"request_gpt_again":False,"details":f"已将消息推送到企业微信群。"}，其中：request_gpt_again代表，是否在插件执行完后，再请求一次ChatGPT，为布尔型数据。details代表，插件返回的详细信息。
-
-3、插件名称、插件对应的程序模块、程序模块中的函数都必须使用完全一致的名称。
-
-4、程序模块中的函数只能接受function_args这一个参数，且这个参数是json类型，更多参数可以写在字典内部。
-
-5、functionpluginlist.json是插件的配置文件，参数要求可参考openai的官方文档：[关于Function Call](https://platform.openai.com/docs/guides/gpt/function-calling) 。
-
-6、相比openai的官方文档，我增加了一个“keyword”的字段，本来是用于通过语音关键词，触发特定的插件。
+1.开发的插件，应该放在chatgpt/functionplugin目录下；
+2.插件应该返回标准额JSON格式数据，如{"request_gpt_again":False,"details":f"已将消息推送到企业微信群。"}，其中：request_gpt_again代表，是否在插件执行完后，再请求一次ChatGPT，为布尔型数据。details代表，插件返回的详细信息。
+3.插件名称、插件对应的程序模块、程序模块中的函数都必须使用完全一致的名称。
+4.程序模块中的函数只能接受function_args这一个参数，且这个参数是json类型，更多参数可以写在字典内部。
+5.functionpluginlist.json是插件的配置文件，参数要求可参考openai的官方文档：[关于Function Call](https://platform.openai.com/docs/guides/gpt/function-calling) 。
+6.相比openai的官方文档，我增加了一个“keyword”的字段，本来是用于通过语音关键词，触发特定的插件。
 
 ## 项目待办
+- 接入Edge-TTS
+- 函数调用支持调用硬件
  
 ## 部署
 1、在Windows环境，可以将程序启动放在一个bat文件中，bat文件中有如下内容：

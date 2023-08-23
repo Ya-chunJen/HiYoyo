@@ -116,5 +116,21 @@
             },
             "required": ["text"]
         }
+    },
+    {
+        "name": "tanktest",
+        "description": "可以控制一个玩具坦克做以下动作：向前、向后、左转、右转、旋转。",
+        "keyword":"坦克模式",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": ["forward", "backup","turnleft","turnright","circle"],
+                    "description": "forward为向前走, backup为向后走,turnleft向左转,turnright向右转,circle为旋转。"
+                }
+            },
+            "required": ["action"]
+        }
     }
 ]

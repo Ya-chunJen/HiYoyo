@@ -58,7 +58,7 @@ class Yoyo:
             print(f"system:已切换到「{input_robot_keyword }」。")  
         elif wordtext == "打开对话文件":
             username_path = os.path.join(os.getcwd(), "log",self.username+".json")
-            os.system("open file://" + username_path)
+            os.system("open " + username_path)
         elif wordtext == "语音对话模式":
             from main import Yoyo
             yoyo = Yoyo()

@@ -14,3 +14,4 @@ log/*
 !log/.gitkeep
 chatgpt/functionplugin/__pycache__
 test.py
+__pycache__/main.cpython-39.pyc

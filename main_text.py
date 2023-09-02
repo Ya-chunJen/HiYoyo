@@ -40,7 +40,7 @@ class Yoyo:
         self.robot_system_content = self.robot_info[robot_index ]['robot_system_content']
         self.username = self.robot_info[robot_index ]['username']
         self.robot_function_model = self.robot_info[robot_index ]['robot_function_model']
-        self.hotword_list = ["模式切换","打开对话文件"]
+        self.hotword_list = ["模式切换","打开对话文件","语音对话模式"]
     
     def hotword(self,wordtext):
         if wordtext == "模式切换":
@@ -53,6 +53,11 @@ class Yoyo:
         elif wordtext == "打开对话文件":
             username_path = os.path.join(os.getcwd(), "log",self.username+".json")
             os.system("open file://" + username_path)
+        elif wordtext == "语音对话模式":
+            from main import Yoyo
+            yoyo = Yoyo()
+            yoyo.loop()
+
 
     def run(self):
         print(f"system:欢迎进入HiYoyo智能助手，你可以直接对话，也可以输入「模式切换」，切换到其他对话模式。")  

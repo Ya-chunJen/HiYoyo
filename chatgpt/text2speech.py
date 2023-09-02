@@ -18,6 +18,9 @@ class AzureTTS:
         self.speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=self.speech_config, audio_config=self.audio_config)
 
     def text2speech_and_play(self,text):
+        # 如果嗓音文件为空的话，就不调用文本转语音模块，用于在纯文本的对话模式。
+        if self.Azure_Voice_Name == "":
+            return ""
         speech_synthesis_result = self.speech_synthesizer.speak_text_async(text).get()
 
         if speech_synthesis_result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:

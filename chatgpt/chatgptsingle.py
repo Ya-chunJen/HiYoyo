@@ -4,7 +4,7 @@ import sys
 import configparser
 from . import text2speech
 
-print(os.getcwd())
+# print(os.getcwd())
 config = configparser.ConfigParser()
 config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 configsection = config['Azureopenai']
@@ -19,7 +19,7 @@ def streamresult(completion):
             chunks_content = chunks_content + content
             splitword_list = ["。", "！","？"]
             if any(splitword in content for splitword in splitword_list):
-                # print(chunks_content, end='', flush=True)
+                print(chunks_content, end='', flush=True)  # 在纯文本对话模式下，可以将显示对话内容在终端中。
                 yield chunks_content
                 chunks_content = ""
 

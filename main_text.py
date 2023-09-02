@@ -2,6 +2,12 @@ import os
 import json
 from chatgpt.chatgptmult import ChatGptMult
 import configparser
+import readline
+
+def input_with_delete(prompt=''):
+    readline.parse_and_bind("set editing-mode vi")  # 设置编辑模式为vi（可选）
+    line = input(prompt)
+    return line
 
 config = configparser.ConfigParser()
 config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
@@ -45,7 +51,7 @@ class Yoyo:
     def hotword(self,wordtext):
         if wordtext == "模式切换":
             print(f"现有智能助手如下，：\n{self.robot_keywords_list}")
-            input_robot_keyword = input("请输入对应名称以切换：")
+            input_robot_keyword = input_with_delete("请输入对应名称以切换：")
             switch_robot_index = self.robot_keywords_list.index(input_robot_keyword)
             switch_robot_id = self.robot_info[switch_robot_index]["robot_id"] # 确定要切换到哪一个智能语音助手。
             self.robot_model(switch_robot_id)   #切换智能语音助手。
@@ -64,7 +70,7 @@ class Yoyo:
         print(f"system:当前和你会话的是「{self.robot_name}」。智能助手介绍：{self.robot_describe}")    
         while True:
             # 唤醒后，打印和播放当前智能语音助手的打招呼语。     
-            q = input(f"{self.username}：") # 获取用户输入的内容。
+            q = input_with_delete(f"{self.username}：") # 获取用户输入的内容。
             robot_keyword = find_robot_keyword(q,self.robot_keywords_list) #判断用户录入的内容是不是包含任意一个智能语音助手的激活关键词。如果不包含，就请求ChatGPT的结果。如果包含，就切换到对应的智能语音助手。
             hotword_keyword = find_robot_keyword(q,self.hotword_list)
             if robot_keyword == None and hotword_keyword == None:

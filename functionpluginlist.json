@@ -118,8 +118,8 @@
         }
     },
     {
-        "name": "tanktest",
-        "description": "可以控制一个玩具坦克做以下动作：向前、向后、左转、右转、旋转。",
+        "name": "tank",
+        "description": "可以控制一个履带车做以下动作：向前、向后、左转、右转、旋转。",
         "keyword":"坦克模式",
         "parameters": {
             "type": "object",
@@ -128,6 +128,10 @@
                     "type": "string",
                     "enum": ["forward", "backup","turnleft","turnright","circle"],
                     "description": "forward为向前走, backup为向后走,turnleft向左转,turnright向右转,circle为旋转。"
+                },
+                "duration":{
+                    "type": "number",
+                    "description": "duration为执行动作的持续时间。比如向前行走5秒。"
                 }
             },
             "required": ["action"]

@@ -121,15 +121,15 @@
         "robot_function_model":"macshell"
     },
     {
-        "username":"tanktest",
-        "robot_id":"tanktest",
-        "robot_name":"虚拟Tanke",
-        "robot_keyword":"坦克模式",
-        "robot_describe":"坦克模式，可以操控坦克。",
+        "username":"驾驶员",
+        "robot_id":"tank",
+        "robot_name":"履带车",
+        "robot_keyword":"履带车模式",
+        "robot_describe":"履带车模式，可以操控履带车进行行走。",
         "robot_voice_name":"zh-CN-XiaoshuangNeural",
-        "robot_reply_word":"嗯，你好！",
-        "robot_system_content":"你是一个智能助手，可以控制一个玩具坦克的动作。",
-        "robot_function_model":"tanktest"
+        "robot_reply_word":"你好！驾驶员！",
+        "robot_system_content":"你是一个智能助手，可以控制一个履带车的动作。",
+        "robot_function_model":"tank"
     }
 ]
 

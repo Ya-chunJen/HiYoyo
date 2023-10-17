@@ -12,20 +12,20 @@ def left_motor(direction=0,speed=100):
 	wiringpi.softPwmCreate(B_ENA, 0, 100) 
 	wiringpi.pinMode(B_IN3,1) 
 	wiringpi.pinMode(B_IN4,1)   
-	if direction == 0:
+	if direction == 0:		
 		wiringpi.digitalWrite(B_IN3,0)
 		wiringpi.digitalWrite(B_IN4,0)
-	elif direction == 1:
+	elif direction == 1:		
 		wiringpi.softPwmWrite(B_ENA, speed)
 		wiringpi.digitalWrite(B_IN3,0)
 		wiringpi.digitalWrite(B_IN4,1)
-	elif direction == 2:
+	elif direction == 2:	
 		wiringpi.softPwmWrite(B_ENA, speed)
 		wiringpi.digitalWrite(B_IN3,1)
 		wiringpi.digitalWrite(B_IN4,0)
 
 def right_motor(direction=0,speed=100):
-	A_ENA,A_IN1,A_IN2 = 19,21,23
+	A_ENA,A_IN1,A_IN2 = 11,13,15
 	wiringpi.pinMode(A_ENA,1)
 	wiringpi.softPwmCreate(A_ENA, 0, 100)
 	wiringpi.pinMode(A_IN1,1) 
@@ -37,7 +37,7 @@ def right_motor(direction=0,speed=100):
 		wiringpi.softPwmWrite(A_ENA, speed)
 		wiringpi.digitalWrite(A_IN1,1)
 		wiringpi.digitalWrite(A_IN2,0)
-	elif direction == 2 :
+	elif direction == 2:
 		wiringpi.softPwmWrite(A_ENA, speed)
 		wiringpi.digitalWrite(A_IN1,0)
 		wiringpi.digitalWrite(A_IN2,1)
@@ -47,8 +47,8 @@ def stop():
 	right_motor(0)
 
 def forward(speed=100,duration=2):
-	left_motor(1,speed)
 	right_motor(1,speed)
+	left_motor(1,speed)
 	time.sleep(duration)
 	stop()
 
@@ -71,18 +71,32 @@ def turnright(speed=100,duration=0.3):
 	stop()
 	
 def circle(speed=100,duration=1):
-	left_motor(1)
-	right_motor(2)
+	left_motor(1,speed)
+	right_motor(2,speed)
 	time.sleep(duration)
 	stop()
 
 def tank(function_args):
-    action = function_args["action"]
-    duration = function_args["duration"]
-	#print(action)
-    exec(f"{action}(duration={duration})")
-    callback_json = {"request_gpt_again":False,"details":"OK"} 
-    return json.dumps(callback_json)
+    try:
+        action = function_args["action"]
+        duration = function_args["duration"]
+		# 判断 duration 是否为0到10之间的数字，如果小于等于0 或不是数字，就将duration设置为0.5，如果duration大于10，就将duration设置为10
+        duration = float(duration)
+        if duration <= 0 or duration > 10:
+            duration = 10
+        else:
+            pass
+    except ValueError:
+        action = "forward"
+        duration = 0.5
+
+    try:
+        exec(f"{action}(duration={duration})")
+        callback_json = {"request_gpt_again":False,"details":"OK"} 
+        return json.dumps(callback_json)
+    except Exception as e:
+        callback_json = {"request_gpt_again":False,"details":"命令解析错误！"}
+        return json.dumps(callback_json)
 
 def loop():
 	while True:
@@ -91,7 +105,7 @@ def loop():
 		actionindex = int(actionstr)
 		#speed = int(input("速度百分比："))
 		speed = 100
-		duration = float(input("运行时间"))
+		duration = float(input("运行时间："))
 		action = ''
 		if actionindex == 1:
 			action = "forward"
@@ -107,12 +121,11 @@ def loop():
 			action = "stop"
 		else:
 			action = actionstr
-
 		exec(f"{action}({speed},{duration})")
 
 if __name__ == '__main__':
-    # left_motor(1)
-    # right_motor(1)
-    #time.sleep(3)
-    # stop()
     loop()
+    # function_args = {"action":"forward","duration":11}
+    # res = tank(function_args)
+    # res = json.loads(res)
+    # print(res["details"])

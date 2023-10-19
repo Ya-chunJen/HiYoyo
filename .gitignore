@@ -16,3 +16,6 @@ chatgpt/functionplugin/__pycache__
 test.py
 __pycache__/main.cpython-39.pyc
 HiYoyo.command
+erniebot/__pycache__/text2speech.cpython-310.pyc
+erniebot/__pycache__/erniebotsingle.cpython-310.pyc
+erniebot/__pycache__/erniebotmult.cpython-310.pyc

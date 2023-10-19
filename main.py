@@ -4,12 +4,17 @@ import json
 from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
 from chatgpt.chatgptmult import ChatGptMult
+from erniebot.erniebotmult import ErnieBotMult
 import configparser
 
 config = configparser.ConfigParser()
 config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 robot_info_file_path = os.path.join(os.getcwd(), "robot_info.json")
-chatgptmult = ChatGptMult()
+aimanufacturer = config["AI"]["aimanufacturer"]
+if aimanufacturer == "openai":
+    chatmult = ChatGptMult()
+elif aimanufacturer == "erniebot":
+    chatmult = ErnieBotMult()
 
 # 增加程序启动时的开机广告，并且告知用户智能音箱的唤醒词。
 print(f"system:叮叮当当！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
@@ -79,7 +84,7 @@ class Yoyo:
                         robot_keyword = find_robot_keyword(q,self.robot_keywords_list) #判断用户录入的内容是不是包含任意一个智能语音助手的激活关键词。如果不包含，就请求ChatGPT的结果。如果包含，就切换到对应的智能语音助手。
                         if robot_keyword == None:
                             print(f'{self.username}:{q}') # 打印用户录入的内容
-                            res = chatgptmult.chatmult(self.username,q,self.robot_system_content,self.robot_function_model,self.robot_voice_name) # 请求ChatGPT的接口。
+                            res = chatmult.chatmult(self.username,q,self.robot_system_content,self.robot_function_model,self.robot_voice_name) # 请求ChatGPT的接口。
                             print(f'{self.robot_name}(GPT)：{res}')   # 打印返回的结果。
                             # self.tts.text2speech_and_play(res)   # 朗读返回的结果。
                         else:

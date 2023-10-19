@@ -1,6 +1,7 @@
 import os
 import json
 from chatgpt.chatgptmult import ChatGptMult
+from erniebot.erniebotmult import ErnieBotMult
 import configparser
 import readline
 
@@ -12,7 +13,12 @@ def input_with_delete(prompt=''):
 config = configparser.ConfigParser()
 config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 robot_info_file_path = os.path.join(os.getcwd(), "robot_info.json")
-chatgptmult = ChatGptMult()
+aimanufacturer = config["AI"]["aimanufacturer"]
+if aimanufacturer == "openai":
+    chatmult = ChatGptMult()
+elif aimanufacturer == "erniebot":
+    chatmult = ErnieBotMult()
+
 
 # 增加程序启动时的开机广告，并且告知用户智能音箱的唤醒词。
 # print(f"system:我是你的智能助手，欢迎开始和我对话。")
@@ -76,7 +82,7 @@ class Yoyo:
             if robot_keyword == None and hotword_keyword == None:
                 #print(f'{self.username}:{q}') # 打印用户录入的内容
                 print(f'{self.robot_name}(GPT)：',end='') 
-                res = chatgptmult.chatmult(self.username,q,self.robot_system_content,self.robot_function_model,voice_name="") # 请求ChatGPT的接口。
+                res = chatmult.chatmult(self.username,q,self.robot_system_content,self.robot_function_model,voice_name="") # 请求ChatGPT的接口。
                 print("")
                 # print(f'{self.robot_name}(GPT)：{res}')   # 打印返回的结果。
             elif robot_keyword == None and hotword_keyword != None:

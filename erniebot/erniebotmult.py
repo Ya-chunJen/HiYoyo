@@ -5,9 +5,10 @@ import copy
 # import erniebotsingle
 from . import erniebotsingle
 # from . import chatgptfunction
+from . import erniebotfunction
 
-erniebotsingle = erniebotsingle.ErnieBotSingle()
-#chatgptfunction = chatgptfunction.ChatGptFunction()
+erniebotsingleclass = erniebotsingle.ErnieBotSingle()
+erniebotfunctionclass = erniebotfunction.ErnieBotFunction()
 
 class ErnieBotMult:
     def __init__(self):
@@ -39,9 +40,9 @@ class ErnieBotMult:
             # print(messages_thistime)
 
         # 调用单轮会话的模块获取结果
-        response_dit = erniebotsingle.chat(messages_thistime,voice_name) #使用Azure的接口
+        #response_dit = erniebotsingleclass.chat(messages_thistime,voice_name) #使用Azure的接口
         # 调用支持函数的单轮会话模块获取结果。
-        # response_dit = chatgptfunction.chat_with_funciton(messages_thistime,functionname,voice_name) 
+        response_dit = erniebotfunctionclass.chat_with_funciton(messages_thistime,functionname,voice_name) 
         
         # print(response_dit)
         # 将本次的回答和历史记录整合

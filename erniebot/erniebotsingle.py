@@ -28,20 +28,6 @@ def get_access_token():
     response = requests.request("POST", url, headers=headers, data=payload)
     return response.json().get("access_token")
 
-# def streamresult(completion):
-#     chunks_content = ""
-#     for chunk in completion:
-#         if chunk["choices"]:
-#             choices = chunk["choices"][0]
-#             delta = choices.get('delta', '')
-#             content = delta.get('content', '')
-#             chunks_content = chunks_content + content
-#             splitword_list = ["。", "！","？"]
-#             if any(splitword in content for splitword in splitword_list):
-#                 print(chunks_content, end='', flush=True)  # 在纯文本对话模式下，可以将显示对话内容在终端中。
-#                 yield chunks_content
-#                 chunks_content = ""
-
 class ErnieBotSingle:
     def __init__(self):
         self.requesturl = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=" + get_access_token()
@@ -57,49 +43,30 @@ class ErnieBotSingle:
             prompt_messages.pop(0)
         payload = json.dumps({
             "system":system,
-            "messages": prompt_messages
+            "messages": prompt_messages,
+            "stream": True
         })
         # 以下是发送请求的过程
         response = requests.request("POST", self.requesturl, headers=self.headers, data=payload)
         # 以下是处理请求结果的过程
         # print(response.text)
-        response_json = json.loads(response.text)
-        if "result" in response_json:
-            responseresult = response_json["result"]          
-        else:
-            responseresult = f'服务出错，错误码：{response_json["error_code"]}'
-        print(responseresult)
-        tts.text2speech_and_play(responseresult)
+        responseresult = ""
+        for line in response.iter_lines():
+            linetext = line.decode(encoding='utf-8')
+            if len(linetext) == 0:
+                continue
+            linetext = linetext.replace("data: ","")
+            try:
+                linejson = json.loads(linetext)
+                lineresult = linejson['result']
+                print(lineresult, end='')
+                tts.text2speech_and_play(lineresult)
+                responseresult = responseresult + lineresult
+            except:
+                responseresult = "服务请求异常！"
+                print(responseresult)
+                tts.text2speech_and_play(responseresult)
         return {"role": "assistant","content": responseresult}
-
-        # try:
-        #     completion = openai.ChatCompletion.create(
-        #         engine = self.gpt35_model,
-        #         messages=prompt_messages,
-        #         temperature=0.8,
-        #         stream=True
-        #         )
-        #     stream_chunks = streamresult(completion)
-        #     stream_content = ""
-        #     while True:
-        #         try:
-        #             stream_chunk = next(stream_chunks)
-        #             stream_content = stream_content + stream_chunk
-        #             #print(stream_content)
-        #         except StopIteration:
-        #             break
-        #         tts.text2speech_and_play(stream_chunk)
-        #     return {"role": "assistant","content": stream_content}
-        #     # response_message = completion.choices[0].message
-        #     # print(response_message)
-        #     # return response_message
-        # except openai.error.RateLimitError:
-        #     response_message = {
-        #         "role": "assistant",
-        #         "content": "抱歉，服务器繁忙，请稍后重试!"
-        #         }
-        #     # print(response_message)
-        #     return response_message
 
 if __name__ == '__main__':
     system = "You are a helpful assistant"

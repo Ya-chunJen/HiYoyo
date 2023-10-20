@@ -93,6 +93,7 @@ class ErnieBotFunction:
 
         if "error_code" in response_json:
             responseresult = f'服务出错，错误码：{response_json["error_code"]}'
+            print(responseresult)
             response_message = {"role": "assistant","content": responseresult}
             return response_message
         elif "function_call" in response_json:
@@ -133,11 +134,12 @@ class ErnieBotFunction:
                 # print(prompt_messages)
                 second_response = erniebotsingleclass.chat(prompt_messages,voice_name) #再次请求一次无函数调用功能的reniebot
                 # print("再次调用一次reniebot返回的结果。")
-                # print(second_response)
+                print(second_response["content"])
                 return second_response
             else:
                 # 调用函数后，函数会返回是否再调用一次的字段，以下部分是不需要再次调用GPT的场景，在这种条件下，可以将函数返回的内容直接返回给终端用户。
                 # print("调用插件后，插件不要求再次调用GPT，插件直接返回了结果。")
+                print(function_response['details'])
                 tts = text2speech.AzureTTS(voice_name)
                 tts.text2speech_and_play(function_response['details'])
                 second_response= {"role":"assistant","content":function_response['details']}
@@ -146,6 +148,7 @@ class ErnieBotFunction:
             # 虽然明确要求使用函数插件，但是因为信息不足等原因，还是直接返回了面向终端用户的信息。
             # print("虽然要求调用了插件，但是GPT还是返回了直接面向终端用户的信息，表示现有的信息不足以按插件要求返回JSON数据。")
             responseresult = response_json["result"]
+            print(responseresult)
             response_message = {"role": "assistant","content": responseresult}
             return response_message
 

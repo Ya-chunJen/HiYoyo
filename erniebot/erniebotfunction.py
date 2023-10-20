@@ -78,8 +78,8 @@ class ErnieBotFunction:
         headers = {'Content-Type': 'application/json'}
         system = prompt_messages[0]["content"] # 文心一言的system不再messages中。需要从messages中获取。
         prompt_messages.pop(0)  # 文心一言的system不再messages中。需要从messages中删除。
-        print("调用函数前的prompt_message")
-        print(prompt_messages)
+        # print("调用函数前的prompt_message")
+        # print(prompt_messages)
 
         if len(prompt_messages) % 2 == 0:
             # 文心一言的messages长度必须为奇数
@@ -119,9 +119,9 @@ class ErnieBotFunction:
             function_response = json.loads(function_response_str)
 
             if function_response['request_gpt_again']:
-                print("调用插件后，插件要求再调用一次GPT。")
+                # print("调用插件后，插件要求再调用一次GPT。")
                 # 调用函数后，函数会返回是否再调用一次的字段，以下部分是需要再次调用GPT的场景。
-                print(function_response['details'])
+                # print(function_response['details'])
                 prompt_messages.append(
                     {
                         "role": "function",
@@ -129,22 +129,22 @@ class ErnieBotFunction:
                         "content": function_response_str,
                     }
                 )
-                print("再次调用插件时的，prompt_messages")
-                print(prompt_messages)
+                # print("再次调用插件时的，prompt_messages")
+                # print(prompt_messages)
                 second_response = erniebotsingleclass.chat(prompt_messages,voice_name) #再次请求一次无函数调用功能的reniebot
-                print("再次调用一次reniebot返回的结果。")
-                print(second_response)
+                # print("再次调用一次reniebot返回的结果。")
+                # print(second_response)
                 return second_response
             else:
                 # 调用函数后，函数会返回是否再调用一次的字段，以下部分是不需要再次调用GPT的场景，在这种条件下，可以将函数返回的内容直接返回给终端用户。
-                print("调用插件后，插件不要求再次调用GPT，插件直接返回了结果。")
+                # print("调用插件后，插件不要求再次调用GPT，插件直接返回了结果。")
                 tts = text2speech.AzureTTS(voice_name)
                 tts.text2speech_and_play(function_response['details'])
                 second_response= {"role":"assistant","content":function_response['details']}
                 return second_response
         else:
             # 虽然明确要求使用函数插件，但是因为信息不足等原因，还是直接返回了面向终端用户的信息。
-            print("虽然要求调用了插件，但是GPT还是返回了直接面向终端用户的信息，表示现有的信息不足以按插件要求返回JSON数据。")
+            # print("虽然要求调用了插件，但是GPT还是返回了直接面向终端用户的信息，表示现有的信息不足以按插件要求返回JSON数据。")
             responseresult = response_json["result"]
             response_message = {"role": "assistant","content": responseresult}
             return response_message

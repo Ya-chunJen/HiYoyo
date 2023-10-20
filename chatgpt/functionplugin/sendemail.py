@@ -25,8 +25,9 @@ def send(mail_to,mail_subject,message):
     smtpobj.quit() #退出邮箱
 
 contacts = [
-    {'name':"张三",'email':"zhangsan@qq.cn"},
-    {'name':"李四",'email':"lisi@qq.cn"}
+    {"name":"任亚军","email":"renyajun@xiajuzi.trade"},
+    {"name":"张三","email":"zhangsan@qq.cn"},
+    {"name":"李四","email":"lisi@qq.cn"}
 ]
 
 def sendemail(function_args):

@@ -37,33 +37,33 @@ def find_values_by_index(list1, list2, index):
             result = list2[i]
     return result
 
-def filter_dict_array(dict_array, key, val):
+def filter_dict_array(dict_array, key, val_array):
     """
     过滤数组中key为指定值的字典元素
+    functions = filter_dict_array(functions,"name",function_call)
     """
     result = []
     for d in dict_array:
-        #if d.get(key) == val: # 精准匹配
-        if  val in d.get(key):  # 包含匹配，这样一个对话，可以启用多个插件。
-            result.append(d)
+        for v in  val_array:
+            if d.get(key) == v: # 精准匹配
+                result.append(d)
     return result
-
 
 class ErnieBotFunction:
     def __init__(self):
         pass
-    def chat_with_funciton(self,prompt_messages,function_call="none",voice_name="zh-CN-XiaoxiaoNeural"):
+    def chat_with_funciton(self,prompt_messages,function_call=["none"],voice_name="zh-CN-XiaoxiaoNeural"):
     # 从文件中读取已有的函数插件列表
         funnctionpluginlist_file_path = os.path.join(os.getcwd(),"functionplugin","functionpluginlist.json")
         with open(funnctionpluginlist_file_path, 'r' ,encoding="UTF-8") as f:
             functions = json.load(f)  
 
-        if function_call == "none":
+        if function_call[0] == "none":
             # 如果function_call为none，那就调用一次简单的erniebot函数，不带任何函数功能。
             # print("不需要调用任何的插件。简单请求一次GPT")
             response_message = erniebotsingleclass.chat(prompt_messages,voice_name)
             return response_message
-        elif function_call == "auto":
+        elif function_call[0] == "auto":
             # 如果function_call为auto，就使用全部的插件。
             pass
             # print("调用的函数：")

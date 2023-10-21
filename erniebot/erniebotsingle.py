@@ -10,6 +10,7 @@ from . import text2speech
 config = configparser.ConfigParser()
 config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 configsection = config['baiduernie']
+ErnieApiVersion = configsection["ErnieApiVersion"]
 
 def get_access_token():
     """
@@ -30,7 +31,7 @@ def get_access_token():
 
 class ErnieBotSingle:
     def __init__(self):
-        self.requesturl = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=" + get_access_token()
+        self.requesturl = ErnieApiVersion + "?access_token=" + get_access_token()
         self.headers = {'Content-Type': 'application/json'}
 
     def chat(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):

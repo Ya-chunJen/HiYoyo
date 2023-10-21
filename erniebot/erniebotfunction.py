@@ -10,6 +10,7 @@ erniebotsingleclass = erniebotsingle.ErnieBotSingle()
 config = configparser.ConfigParser()
 config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
 configsection = config['baiduernie']
+ErnieApiVersion = configsection["ErnieApiVersion"]
 
 def get_access_token():
     """
@@ -73,8 +74,7 @@ class ErnieBotFunction:
             # print("调用的函数：")
             # print(functions)
 
-        
-        requesturl = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=" + get_access_token()
+        requesturl = ErnieApiVersion + "?access_token=" + get_access_token()
         headers = {'Content-Type': 'application/json'}
         system = prompt_messages[0]["content"] # 文心一言的system不再messages中。需要从messages中获取。
         prompt_messages.pop(0)  # 文心一言的system不再messages中。需要从messages中删除。

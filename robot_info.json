@@ -135,7 +135,7 @@
         "username":"打工人",
         "robot_id":"MailAssistant",
         "robot_name":"邮件小助手",
-        "robot_keyword":"邮件小助手模式",
+        "robot_keyword":"邮件助手模式",
         "robot_describe":"你是一个邮件小助手，可以通过插件的方式，帮我发送邮件给联系人。",
         "robot_voice_name":"zh-CN-XiaoshuangNeural",
         "robot_reply_word":"嗯，你好！",
@@ -143,4 +143,3 @@
         "robot_function_model":"sendmail"
     }
 ]
-

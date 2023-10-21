@@ -54,7 +54,7 @@ class ErnieBotFunction:
         pass
     def chat_with_funciton(self,prompt_messages,function_call="none",voice_name="zh-CN-XiaoxiaoNeural"):
     # 从文件中读取已有的函数插件列表
-        funnctionpluginlist_file_path = os.path.join(os.getcwd(),"functionpluginlist.json")
+        funnctionpluginlist_file_path = os.path.join(os.getcwd(),"functionplugin","functionpluginlist.json")
         with open(funnctionpluginlist_file_path, 'r' ,encoding="UTF-8") as f:
             functions = json.load(f)  
 
@@ -110,7 +110,7 @@ class ErnieBotFunction:
 
             # 根据函数名称，加载同名模块下的同名函数。
             module_name = function_name
-            module_path = os.path.join(os.getcwd(), 'chatgpt','functionplugin', module_name + '.py')
+            module_path = os.path.join(os.getcwd(),'functionplugin', module_name + '.py')
             module = importlib.util.module_from_spec(spec:= importlib.util.spec_from_file_location(module_name, module_path)) # type: ignore
             spec.loader.exec_module(module)
             fuction_to_call = getattr(module, function_name)  # 获取函数对象

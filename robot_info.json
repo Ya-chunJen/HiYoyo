@@ -140,6 +140,6 @@
         "robot_voice_name":"zh-CN-XiaoshuangNeural",
         "robot_reply_word":"嗯，你好！",
         "robot_system_content":"你是一个邮件小助手，可以通过插件的方式，帮我发送邮件给联系人。",
-        "robot_function_model":"sendmail"
+        "robot_function_model":"sendemail"
     }
 ]

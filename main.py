@@ -8,8 +8,8 @@ from erniebot.erniebotmult import ErnieBotMult
 import configparser
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
-robot_info_file_path = os.path.join(os.getcwd(), "robot_info.json")
+config.read(os.path.join(os.path.dirname(__file__), "config.ini"),encoding="UTF-8")
+robot_info_file_path = os.path.join(os.path.dirname(__file__), "robot_info.json")
 aimanufacturer = config["AI"]["aimanufacturer"]
 if aimanufacturer == "openai":
     chatmult = ChatGptMult()

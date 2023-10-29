@@ -4,18 +4,17 @@ from . import snowboydecoder
 import configparser
 
 config = configparser.ConfigParser()
-config.read(f"{os.getcwd()}/config.ini",encoding="UTF-8")
+config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
 
 class SnowboyWakeWord:
     def __init__(self):
-        self.model_path = os.path.join(os.getcwd(),config['Wakeword']['Snowboy_Model_Path'])
+        self.model_path = os.path.join(os.path.dirname(__file__),config['Wakeword']['Snowboy_Model_Path'])
         self.sensitivity = float(config['Wakeword']['Sensitivity'])
         self.wake_word_detected = False
         self.detector = snowboydecoder.HotwordDetector(self.model_path, sensitivity=self.sensitivity)
 
     def detected(self):
-        self.wake_word_detected = True
-        # snowboydecoder.play_audio_file(os.path.join(os.getcwd(),config['Wakeword']['Wake_Sound']))    
+        self.wake_word_detected = True   
         self.detector.terminate()
 
     def detect_wake_word(self):

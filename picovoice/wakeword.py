@@ -5,12 +5,12 @@ import os
 import configparser
 
 config = configparser.ConfigParser()
-config.read(f"{os.getcwd()}/config.ini",encoding="UTF-8")
+config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
 
 class PicoWakeWord:
     def __init__(self):
         self.PICOVOICE_API_KEY = config['Wakeword']['Picovoice_Api_Key']
-        self.keyword_path = os.path.join(os.getcwd(),config['Wakeword']['Picovoice_Model_Path'])
+        self.keyword_path = os.path.join(os.path.dirname(__file__),config['Wakeword']['Picovoice_Model_Path'])
 
         if config['Wakeword']['Picovoice_Model_Path'] != "":
             self.keyword_paths = [self.keyword_path]

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TankWeb远程操控页面</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <script>
+        // 按键操控的脚本
+        var btn1 = document.getElementById("btn1");
+        var btn2 = document.getElementById("btn2");
+        var btn3 = document.getElementById("btn3");
+        var btn4 = document.getElementById("btn4");
+        
+        function send_post_request(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.send();
+        }
+        
+        btn1.addEventListener("mousedown", function() {
+            send_post_request('/forward');
+        });
+        btn2.addEventListener("mousedown", function() {
+            send_post_request('/backup');
+        });
+        btn3.addEventListener("mousedown", function() {
+            send_post_request('/turnleft');
+        });
+        btn4.addEventListener("mousedown", function() {
+            send_post_request('/turnright');
+        });
+        btn1.addEventListener("touchstart", function() {
+            send_post_request('/forward');
+        });
+        btn2.addEventListener("touchstart", function() {
+            send_post_request('/backup');
+        });
+        btn3.addEventListener("touchstart", function() {
+            send_post_request('/turnleft');
+        });
+        btn4.addEventListener("touchstart", function() {
+            send_post_request('/turnright');
+        });
+        
+        btn1.addEventListener("mouseup", function() {
+            send_post_request('/stop');
+        });
+        btn2.addEventListener("mouseup", function() {
+            send_post_request('/stop');
+        });
+        btn3.addEventListener("mouseup", function() {
+            send_post_request('/stop');
+        });
+        btn4.addEventListener("mouseup", function() {
+            send_post_request('/stop');
+        });
+        btn1.addEventListener("touchend", function() {
+            send_post_request('/stop');
+        });
+        btn2.addEventListener("touchend", function() {
+            send_post_request('/stop');
+        });
+        btn3.addEventListener("touchend", function() {
+            send_post_request('/stop');
+        });
+        btn4.addEventListener("touchend", function() {
+            send_post_request('/stop');
+        });
+    </script>
+    <style>
+        .btn {
+            width: 2.8em;
+            height: 2.8em;
+            font-size: 3em;
+            margin: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <div id="video-container" width="90%" height="auto">
+                <img src="{{ url_for('video_feed') }}">
+            </div>
+            <button id="btn1" type="button" class="btn btn-primary">向前</button><br/>
+            <button id="btn3" type="button" class="btn btn-primary">左转</button>
+            <button id="btn2" type="button" class="btn btn-primary">向后</button>           
+            <button id="btn4" type="button" class="btn btn-primary">右转</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

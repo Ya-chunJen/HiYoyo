@@ -4,9 +4,8 @@ import sys
 import configparser
 from . import text2speech
 
-# print(os.getcwd())
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), "config.ini"),encoding="UTF-8")
+config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
 configsection = config['Azureopenai']
 
 def streamresult(completion):

@@ -3,12 +3,20 @@ import json
 import requests
 import configparser
 import importlib
-from . import erniebotsingle
-from . import text2speech
+
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
+
+from erniebot import erniebotsingle
+from erniebot import text2speech
+# import erniebotsingle
+# import text2speech
+
 erniebotsingleclass = erniebotsingle.ErnieBotSingle()
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['baiduernie']
 ErnieApiVersion = configsection["ErnieApiVersion"]
 
@@ -54,7 +62,7 @@ class ErnieBotFunction:
         pass
     def chat_with_funciton(self,prompt_messages,function_call=["none"],voice_name="zh-CN-XiaoxiaoNeural"):
     # 从文件中读取已有的函数插件列表
-        funnctionpluginlist_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),"functionplugin","functionpluginlist.json")
+        funnctionpluginlist_file_path = os.path.join(workdir,"functionplugin","functionpluginlist.json")
         with open(funnctionpluginlist_file_path, 'r' ,encoding="UTF-8") as f:
             functions = json.load(f)  
 
@@ -110,7 +118,7 @@ class ErnieBotFunction:
 
             # 根据函数名称，加载同名模块下的同名函数。
             module_name = function_name
-            module_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'functionplugin', module_name + '.py')
+            module_path = os.path.join(workdir,'functionplugin', module_name + '.py')
             module = importlib.util.module_from_spec(spec:= importlib.util.spec_from_file_location(module_name, module_path)) # type: ignore
             spec.loader.exec_module(module)
             fuction_to_call = getattr(module, function_name)  # 获取函数对象

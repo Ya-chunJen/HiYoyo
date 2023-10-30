@@ -1,15 +1,20 @@
 import os
 import json
+import configparser
+
+import sys
+workdir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(workdir)
 
 from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
 from chatgpt.chatgptmult import ChatGptMult
 from erniebot.erniebotmult import ErnieBotMult
-import configparser
+
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), "config.ini"),encoding="UTF-8")
-robot_info_file_path = os.path.join(os.path.dirname(__file__), "robot_info.json")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
+robot_info_file_path = os.path.join(workdir, "robot_info.json")
 aimanufacturer = config["AI"]["aimanufacturer"]
 if aimanufacturer == "openai":
     chatmult = ChatGptMult()

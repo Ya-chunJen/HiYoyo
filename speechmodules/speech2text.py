@@ -1,10 +1,13 @@
 import azure.cognitiveservices.speech as speechsdk
 import configparser
 import os
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
-audio_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "speechfile/speech.wav")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
+audio_file_path = os.path.join(workdir, "speechfile/speech.wav")
 
 class AzureASR:
     def __init__(self):

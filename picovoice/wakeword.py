@@ -3,14 +3,17 @@ import pyaudio
 import struct
 import os
 import configparser
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 
 class PicoWakeWord:
     def __init__(self):
         self.PICOVOICE_API_KEY = config['Wakeword']['Picovoice_Api_Key']
-        self.keyword_path = os.path.join(os.path.dirname(__file__),config['Wakeword']['Picovoice_Model_Path'])
+        self.keyword_path = os.path.join(workdir,"picovice",config['Wakeword']['Picovoice_Model_Path'])
 
         if config['Wakeword']['Picovoice_Model_Path'] != "":
             self.keyword_paths = [self.keyword_path]

@@ -2,10 +2,13 @@ import os
 import json
 import os
 import copy
-# import erniebotsingle
-from . import erniebotsingle
-# from . import chatgptfunction
-from . import erniebotfunction
+
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
+
+from erniebot import erniebotsingle
+from erniebot import erniebotfunction
 
 erniebotsingleclass = erniebotsingle.ErnieBotSingle()
 erniebotfunctionclass = erniebotfunction.ErnieBotFunction()
@@ -17,7 +20,7 @@ class ErnieBotMult:
     def chatmult(self,username,prompt,system_content="You are a helpful assistant",functionname="none",voice_name="zh-CN-XiaoxiaoNeural"):
         # 用户ID文件路径
         username_fpath = f"{username}.json"
-        username_fpath = os.path.join(os.path.dirname(os.path.dirname(__file__)),"log",username_fpath)
+        username_fpath = os.path.join(workdir,"log",username_fpath)
         # 判断用户ID文件是不是存在，存在就读取，不存在就建立
         if os.path.exists(username_fpath):
             with open(username_fpath) as f:

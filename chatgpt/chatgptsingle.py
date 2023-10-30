@@ -2,10 +2,15 @@ import os
 import openai
 import sys
 import configparser
-from . import text2speech
+
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
+
+from chatgpt import text2speech
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['Azureopenai']
 
 def streamresult(completion):

@@ -1,9 +1,14 @@
 import os
 import json
-from chatgpt.chatgptmult import ChatGptMult
-from erniebot.erniebotmult import ErnieBotMult
 import configparser
 import readline
+
+import sys
+workdir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(workdir)
+
+from chatgpt.chatgptmult import ChatGptMult
+from erniebot.erniebotmult import ErnieBotMult
 
 def input_with_delete(prompt=''):
     readline.parse_and_bind("set editing-mode vi")  # 设置编辑模式为vi（可选）
@@ -11,8 +16,8 @@ def input_with_delete(prompt=''):
     return line
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), "config.ini"),encoding="UTF-8")
-robot_info_file_path = os.path.join(os.path.dirname(__file__), "robot_info.json")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
+robot_info_file_path = os.path.join(workdir, "robot_info.json")
 aimanufacturer = config["AI"]["aimanufacturer"]
 if aimanufacturer == "openai":
     chatmult = ChatGptMult()
@@ -63,7 +68,7 @@ class Yoyo:
             self.robot_model(switch_robot_id)   #切换智能语音助手。
             print(f"system:已切换到「{input_robot_keyword }」。")  
         elif wordtext == "打开对话文件":
-            username_path = os.path.join(os.path.dirname(__file__), "log",self.username+".json")
+            username_path = os.path.join(workdir, "log",self.username+".json")
             os.system("open " + username_path)
         elif wordtext == "语音对话模式":
             from main import Yoyo

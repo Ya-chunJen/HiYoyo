@@ -4,9 +4,12 @@ import pytz
 import json
 import requests
 import configparser
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['serpapi']
 
 def search(function_args):

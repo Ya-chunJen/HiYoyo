@@ -1,14 +1,18 @@
 import os
 import pyaudio
-from . import snowboydecoder
+import sys
+workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(workdir)
+
+from snowboy import snowboydecoder
 import configparser
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.ini"),encoding="UTF-8")
+config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 
 class SnowboyWakeWord:
     def __init__(self):
-        self.model_path = os.path.join(os.path.dirname(__file__),config['Wakeword']['Snowboy_Model_Path'])
+        self.model_path = os.path.join(workdir,"snowboy",config['Wakeword']['Snowboy_Model_Path'])
         self.sensitivity = float(config['Wakeword']['Sensitivity'])
         self.wake_word_detected = False
         self.detector = snowboydecoder.HotwordDetector(self.model_path, sensitivity=self.sensitivity)

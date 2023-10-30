@@ -1,15 +1,12 @@
-import os
-import json
+import os,json,sys,configparser
 import openai
-import configparser
 import importlib
 
-import sys
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
 from chatgpt import chatgptsingle
-from chatgpt import text2speech
+from speechmodules import text2speech
 
 chatgptsingleclass = chatgptsingle.ChatGptSingle()
 

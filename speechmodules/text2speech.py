@@ -1,9 +1,6 @@
-import os
-import sys
+import os,json,sys,configparser
 import azure.cognitiveservices.speech as speechsdk
-import configparser
-import os
-import sys
+
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
@@ -21,6 +18,9 @@ class AzureTTS:
         self.speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=self.speech_config, audio_config=self.audio_config)
 
     def text2speech_and_play(self,text):
+        # 如果嗓音文件为空的话，就不调用文本转语音模块，用于在纯文本的对话模式。
+        if self.Azure_Voice_Name == "":
+            return ""
         speech_synthesis_result = self.speech_synthesizer.speak_text_async(text).get()
 
         if speech_synthesis_result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
@@ -35,5 +35,5 @@ class AzureTTS:
                     print("Didy you set the speech resource key and region values?")
 
 if __name__ == '__main__':
-    azuretts = AzureTTS()
+    azuretts = AzureTTS("zh-CN-YunzeNeural")
     azuretts.text2speech_and_play("嗯，你好，我是你的智能小伙伴，我的名字叫Yoyo，你可以和我畅所欲言，我是很会聊天的哦！")

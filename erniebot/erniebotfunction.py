@@ -1,17 +1,12 @@
-import os
-import json
+import os,json,sys,configparser
 import requests
-import configparser
 import importlib
 
-import sys
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
 from erniebot import erniebotsingle
 from erniebot import text2speech
-# import erniebotsingle
-# import text2speech
 
 erniebotsingleclass = erniebotsingle.ErnieBotSingle()
 

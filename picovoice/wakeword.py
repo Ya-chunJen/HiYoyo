@@ -1,9 +1,8 @@
+import os,json,sys,configparser
 import pvporcupine
 import pyaudio
 import struct
-import os
-import configparser
-import sys
+
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 

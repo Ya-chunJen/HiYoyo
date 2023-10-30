@@ -1,13 +1,10 @@
-import os
+import os,json,sys,configparser
 import openai
-import sys
-import configparser
 
-import sys
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
-from chatgpt import text2speech
+from speechmodules import text2speech
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")

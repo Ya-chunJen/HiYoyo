@@ -1,12 +1,8 @@
-import os
-import sys
+import os,json,sys,configparser
 import azure.cognitiveservices.speech as speechsdk
-import configparser
-import os
-import sys
+
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
-
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")

@@ -1,8 +1,5 @@
-import os
-import json
-import configparser
+import os,json,sys,configparser
 
-import sys
 workdir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(workdir)
 
@@ -10,7 +7,6 @@ from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
 from chatgpt.chatgptmult import ChatGptMult
 from erniebot.erniebotmult import ErnieBotMult
-
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")

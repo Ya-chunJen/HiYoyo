@@ -1,9 +1,6 @@
-import os
-import json
-import configparser
+import os,json,sys,configparser
 import readline
 
-import sys
 workdir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(workdir)
 

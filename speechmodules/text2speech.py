@@ -8,7 +8,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 
 class AzureTTS:
-    def __init__(self,Azure_Voice_Name="zh-CN-XiaoshuangNeural"):       
+    def __init__(self,Azure_Voice_Name="zh-CN-XiaoshuangNeural"): 
         self.Azure_API_KEY = config['AzureSpeech']['AZURE_API_KEY']
         self.Azure_REGION = config['AzureSpeech']['AZURE_REGION']
         self.Azure_Voice_Name = Azure_Voice_Name

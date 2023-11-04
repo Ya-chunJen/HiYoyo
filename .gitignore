@@ -17,4 +17,5 @@ log/*
 test.py
 __pycache__/main.cpython-39.pyc
 HiYoyo.command
-
+speechmodules/tepfile/*
+!speechmodules/tepfile/.gitkeep

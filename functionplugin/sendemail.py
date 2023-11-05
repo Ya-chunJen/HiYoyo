@@ -1,11 +1,9 @@
-import os
+import os,json,sys,configparser
 import smtplib
-import json
 from email.mime.text import MIMEText
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
-import configparser
-import sys
+
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
@@ -28,6 +26,7 @@ def send(mail_to,mail_subject,message):
     smtpobj.quit() #退出邮箱
 
 contacts = [
+    {"name":"任雅君","email":"renyajun@xiajuzi.trade"},
     {"name":"任亚军","email":"renyajun@xiajuzi.trade"},
     {"name":"张三","email":"zhangsan@qq.cn"},
     {"name":"李四","email":"lisi@qq.cn"}

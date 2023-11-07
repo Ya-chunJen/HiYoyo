@@ -60,6 +60,6 @@ if __name__ == '__main__':
     username = "1"
     prompt =  input("请输入你的问题：")
     system_content = "你是一个有用的智能助手。"
-    functionname = "none"
+    functionname = ["none"]
     chatgptmult = ChatGptMult()
     chatgptmult.chatmult(username,prompt,system_content,functionname)

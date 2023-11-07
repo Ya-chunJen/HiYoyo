@@ -48,7 +48,8 @@ class ChatGptFunction:
     # 从文件中读取已有的函数插件列表
         funnctionpluginlist_file_path = os.path.join(workdir,"functionplugin","functionpluginlist.json")
         with open(funnctionpluginlist_file_path, 'r' ,encoding="UTF-8") as f:
-            functions = json.load(f)  
+            functions = json.load(f)
+            #print(functions)
 
         if function_call[0] == "none":
             # 如果function_call为none，那就调用一次简单的chatGPT函数，不带任何函数功能。
@@ -67,6 +68,8 @@ class ChatGptFunction:
             # print("调用的函数：")
             # print(functions)
 
+        # print(functions)
+        prompt_messages[0]['content'] = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous"
         # print("调用函数前的prompt_message")
         # print(prompt_messages)
         completion = openai.ChatCompletion.create(
@@ -130,8 +133,9 @@ class ChatGptFunction:
             return response_message
 
 if __name__ == '__main__':
-    system_content = "你是一个有用的智能助手。"
-    function_call = input("请输入插件的名称：")
+    system_content = "你是一个有用的智能助手！"
+    function_call_name = input("请输入插件的名称：")
+    function_call = [function_call_name]
     prompt = input("请输入你的问题：")
     messages=[{"role":"system","content":system_content},{"role": "user", "content":prompt}]
     chatgptfunction = ChatGptFunction()

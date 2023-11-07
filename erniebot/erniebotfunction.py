@@ -157,7 +157,8 @@ class ErnieBotFunction:
 
 if __name__ == '__main__':
     system_content = "你是一个有用的智能助手。"
-    function_call = input("请输入插件的名称：")
+    function_call_name = input("请输入插件的名称：")
+    function_call = [function_call_name]
     prompt = input("请输入你的问题：")
     messages=[{"role":"system","content":system_content},{"role": "user", "content":prompt}]
     erniebotfunction = ErnieBotFunction()

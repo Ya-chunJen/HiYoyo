@@ -3,35 +3,34 @@ import os,json,sys,configparser
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
-from speechmodules import text2speech
-
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['Openai']
 
 import requests
 
-class OpenaiBotSingle:
+class OpenaiBotImage:
     def __init__(self):
-        self.openai_api_url = "https://api.openai.com/v1/chat/completions"
+        self.openai_api_url = "https://api.openai.com/v1/images/generations"
         self.openai_api_key = configsection['openai_api_key']
         self.headers = {"Content-Type": "application/json","Authorization": "Bearer " + self.openai_api_key}
-        self.model = "gpt-3.5-turbo"
+        self.model = "dall-e-3"
 
-    def chat(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):
+    def create(self,prompt_messages):
         data = {
             "model": self.model,
-            "messages": prompt_messages
+            "prompt": prompt_messages,
+            "n": 1,
+            "size": "1024x1024"
         }
         response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
 
-        result = response.json()['choices'][0]['message']
+        print(response.json())
+        result = response.json()['data'][0]['url']
         return result
 
 if __name__ == '__main__':
-    system = "You are a helpful assistant"
     prompt = input("请输入你的问题：")
-    messages=[{"role":"system","content": system},{"role": "user", "content":prompt}]
-    openaibotsingle = OpenaiBotSingle()
-    post_message = openaibotsingle.chat(messages)["content"]
+    openaibotimage = OpenaiBotImage()
+    post_message = openaibotimage.create(prompt)
     print(post_message)

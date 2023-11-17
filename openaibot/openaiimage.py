@@ -11,7 +11,7 @@ import requests
 
 class OpenaiBotImage:
     def __init__(self):
-        self.openai_api_url = "https://api.openai.com/v1/images/generations"
+        self.openai_api_url = configsection['openai_api_domain'] + "/v1/images/generations"
         self.openai_api_key = configsection['openai_api_key']
         self.headers = {"Content-Type": "application/json","Authorization": "Bearer " + self.openai_api_key}
         self.model = "dall-e-3"

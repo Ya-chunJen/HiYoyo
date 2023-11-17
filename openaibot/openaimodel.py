@@ -11,7 +11,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['Openai']
 
-openai_api_url = "https://api.openai.com/v1/models"
+openai_api_url = configsection['openai_api_domain'] + "/v1/models"
 openai_api_key = configsection['openai_api_key']
 
 headers = {"Content-Type": "application/json","Authorization": "Bearer " + openai_api_key}

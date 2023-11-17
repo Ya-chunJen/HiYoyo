@@ -5,8 +5,9 @@ bin/
 include/
 lib/
 pyvenv.cfg
-chatgpt/__pycache__/
+azurebot/__pycache__/
 snowboy/__pycache__/
+openaibot/__pycache__/
 picovoice/__pycache__/
 speechmodules/__pycache__/
 erniebot/__pycache__/

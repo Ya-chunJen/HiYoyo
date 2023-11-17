@@ -5,15 +5,15 @@ sys.path.append(workdir)
 
 from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
-from chatgpt.chatgptmult import ChatGptMult
+from azurebot.azurebotmult import AzureBotMult
 from erniebot.erniebotmult import ErnieBotMult
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 robot_info_file_path = os.path.join(workdir, "robot_info.json")
 aimanufacturer = config["AI"]["aimanufacturer"]
-if aimanufacturer == "openai":
-    chatmult = ChatGptMult()
+if aimanufacturer == "azurebot":
+    chatmult = AzureBotMult()
 elif aimanufacturer == "erniebot":
     chatmult = ErnieBotMult()
 

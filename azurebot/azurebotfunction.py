@@ -5,10 +5,10 @@ import importlib
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
-from chatgpt import chatgptsingle
+from azurebot import azurebotsingle
 from speechmodules import text2speech
 
-chatgptsingleclass = chatgptsingle.ChatGptSingle()
+azurebotsingleclass = azurebotsingle.AzureBotSingle()
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
@@ -41,7 +41,7 @@ def filter_dict_array(dict_array, key, val_array):
     return result
 
 
-class ChatGptFunction:
+class AzureBotFunction:
     def __init__(self):
         pass
     def chat_with_funciton(self,prompt_messages,function_call=["none"],voice_name="zh-CN-XiaoxiaoNeural"):
@@ -54,7 +54,7 @@ class ChatGptFunction:
         if function_call[0] == "none":
             # 如果function_call为none，那就调用一次简单的chatGPT函数，不带任何函数功能。
             # print("不需要调用任何的插件。简单请求一次GPT")
-            response_message = chatgptsingleclass.chat(prompt_messages,voice_name)
+            response_message = azurebotsingleclass.chat(prompt_messages,voice_name)
             return response_message
         elif function_call[0] == "auto":
             # 如果function_call为auto，就使用全部的插件。一般不会使用。
@@ -116,7 +116,7 @@ class ChatGptFunction:
                 prompt_messages[0]["content"] = "你是一个有用的智能助手。"
                 # print(prompt_messages)
                 # second_response = chatGPT(prompt_messages) #再次请求一次无函数调用功能的chatGPT
-                second_response = chatgptsingleclass.chat(prompt_messages,voice_name) #再次请求一次无函数调用功能的chatGPT
+                second_response = azurebotsingleclass.chat(prompt_messages,voice_name) #再次请求一次无函数调用功能的chatGPT
                 # print("再次调用一次GPT返回的结果。")
                 # print(second_response)
                 return second_response
@@ -138,6 +138,6 @@ if __name__ == '__main__':
     function_call = [function_call_name]
     prompt = input("请输入你的问题：")
     messages=[{"role":"system","content":system_content},{"role": "user", "content":prompt}]
-    chatgptfunction = ChatGptFunction()
-    result = chatgptfunction.chat_with_funciton(messages,function_call)
+    azurebotfunction = AzureBotFunction()
+    result = azurebotfunction.chat_with_funciton(messages,function_call)
     print(result['content'])

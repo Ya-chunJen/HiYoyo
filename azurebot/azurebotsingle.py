@@ -24,17 +24,13 @@ def streamresult(completion):
                 yield chunks_content
                 chunks_content = ""
 
-class ChatGptSingle:
+class AzureBotSingle:
     def __init__(self):
-        openai.api_key = config['Openai']['openai_api_key']
-        if openai.api_key == "sk-":
-            openai.api_type = "azure"
-            openai.api_version = configsection['openai_api_version']
-            openai.api_base = configsection['openai_api_base']
-            openai.api_key = configsection['openai_api_key']
-            self.gpt35_model = configsection['gpt35_deployment_name']
-        else:
-            self.gpt35_model = "gpt-3.5-turbo"
+        openai.api_type = "azure"
+        openai.api_version = configsection['openai_api_version']
+        openai.api_base = configsection['openai_api_base']
+        openai.api_key = configsection['openai_api_key']
+        self.gpt35_model = configsection['gpt35_deployment_name']
 
     def chat(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):
         tts = text2speech.AzureTTS(voice_name)
@@ -61,7 +57,7 @@ class ChatGptSingle:
             # response_message = completion.choices[0].message
             # print(response_message)
             # return response_message
-        except openai.error.RateLimitError:
+        except openai.error.RateLimitError: # type: ignore
             response_message = {
                 "role": "assistant",
                 "content": "抱歉，服务器繁忙，请稍后重试!"
@@ -73,6 +69,6 @@ if __name__ == '__main__':
     system = "You are a helpful assistant"
     prompt = input("请输入你的问题：")
     messages=[{"role":"system","content": system},{"role": "user", "content":prompt}]
-    chatgptsingle = ChatGptSingle()
-    post_message = chatgptsingle.chat(messages)["content"]
+    azurebotsingle = AzureBotSingle()
+    post_message = azurebotsingle.chat(messages)["content"]
     print(post_message)

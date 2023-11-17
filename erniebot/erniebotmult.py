@@ -14,7 +14,7 @@ class ErnieBotMult:
     def __init__(self):
         pass
 
-    def chatmult(self,username,prompt,system_content="You are a helpful assistant",functionname="none",voice_name="zh-CN-XiaoxiaoNeural"):
+    def chatmult(self,username,prompt,system_content="You are a helpful assistant",functionname=["none"],voice_name="zh-CN-XiaoxiaoNeural"):
         # 用户ID文件路径
         username_fpath = f"{username}.json"
         username_fpath = os.path.join(workdir,"log",username_fpath)
@@ -57,7 +57,7 @@ class ErnieBotMult:
         return response_content
 
 if __name__ == '__main__':
-    username = "单身者"
+    username = "1"
     prompt =  input("请输入你的问题：")
     system_content = "你是一个有用的智能助手。"
     functionname = ["none"]

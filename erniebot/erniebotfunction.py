@@ -6,7 +6,7 @@ workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
 from erniebot import erniebotsingle
-from erniebot import text2speech
+from speechmodules import text2speech
 
 erniebotsingleclass = erniebotsingle.ErnieBotSingle()
 

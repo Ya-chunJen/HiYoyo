@@ -4,17 +4,17 @@ import copy
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
-from chatgpt import chatgptsingle
-from chatgpt import chatgptfunction
+from azurebot import azurebotsingle
+from azurebot import azurebotfunction
 
-chatgptsingle = chatgptsingle.ChatGptSingle()
-chatgptfunction = chatgptfunction.ChatGptFunction()
+azurebotsingleclass = azurebotsingle.AzureBotSingle()
+azurebotfunctionclass = azurebotfunction.AzureBotFunction()
 
-class ChatGptMult:
+class AzureBotMult:
     def __init__(self):
         pass
 
-    def chatmult(self,username,prompt,system_content="You are a helpful assistant",functionname="none",voice_name="zh-CN-XiaoxiaoNeural"):
+    def chatmult(self,username,prompt,system_content="You are a helpful assistant",functionname=["none"],voice_name="zh-CN-XiaoxiaoNeural"):
         # 用户ID文件路径
         username_fpath = f"{username}.json"
         username_fpath = os.path.join(workdir,"log",username_fpath)
@@ -42,7 +42,7 @@ class ChatGptMult:
         # 调用单轮会话的模块获取结果
         # response_dit = chatgptsingle.chat(messages_thistime,voice_name) #使用Azure的接口
         # 调用支持函数的单轮会话模块获取结果。
-        response_dit = chatgptfunction.chat_with_funciton(messages_thistime,functionname,voice_name) 
+        response_dit = azurebotfunctionclass.chat_with_funciton(messages_thistime,functionname,voice_name) 
         
         # print(response_dit)
         # 将本次的回答和历史记录整合
@@ -61,5 +61,5 @@ if __name__ == '__main__':
     prompt =  input("请输入你的问题：")
     system_content = "你是一个有用的智能助手。"
     functionname = ["none"]
-    chatgptmult = ChatGptMult()
-    chatgptmult.chatmult(username,prompt,system_content,functionname)
+    azurebotmult = AzureBotMult()
+    azurebotmult.chatmult(username,prompt,system_content,functionname)

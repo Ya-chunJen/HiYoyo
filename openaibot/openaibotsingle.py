@@ -24,9 +24,9 @@ class OpenaiBotSingle:
             "messages": prompt_messages
         }
         response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
-        print(response.json())
+        # print(response.json())
         result = response.json()['choices'][0]['message']
-        print(result)
+        # print(result)
         return result
 
 if __name__ == '__main__':

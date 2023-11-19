@@ -7,6 +7,7 @@ from speechmodules.speech2text import AzureASR
 from speechmodules.text2speech import AzureTTS
 from azurebot.azurebotmult import AzureBotMult
 from erniebot.erniebotmult import ErnieBotMult
+from openaibot.openaibotmult import OpenaiBotMult
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
@@ -16,6 +17,8 @@ if aimanufacturer == "azurebot":
     chatmult = AzureBotMult()
 elif aimanufacturer == "erniebot":
     chatmult = ErnieBotMult()
+elif aimanufacturer == "openaibot":
+    chatmult = OpenaiBotMult()
 
 # 增加程序启动时的开机广告，并且告知用户智能音箱的唤醒词。
 print(f"system:叮叮当当！我的唤醒词是：{config['Wakeword']['wakewordtext']}")

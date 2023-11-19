@@ -26,7 +26,7 @@ class OpenaiBotSingle:
         response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
         # print(response.json())
         result = response.json()['choices'][0]['message']
-        # print(result)
+        print(result["content"])
         return result
 
 if __name__ == '__main__':

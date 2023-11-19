@@ -6,6 +6,7 @@ sys.path.append(workdir)
 
 from azurebot.azurebotmult import AzureBotMult
 from erniebot.erniebotmult import ErnieBotMult
+from openaibot.openaibotmult import OpenaiBotMult
 
 def input_with_delete(prompt=''):
     readline.parse_and_bind("set editing-mode vi")  # 设置编辑模式为vi（可选）
@@ -20,7 +21,8 @@ if aimanufacturer == "azurebot":
     chatmult = AzureBotMult()
 elif aimanufacturer == "erniebot":
     chatmult = ErnieBotMult()
-
+elif aimanufacturer == "openaibot":
+    chatmult = OpenaiBotMult()
 
 # 增加程序启动时的开机广告，并且告知用户智能音箱的唤醒词。
 # print(f"system:我是你的智能助手，欢迎开始和我对话。")

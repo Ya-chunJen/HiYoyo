@@ -22,3 +22,5 @@ speechmodules/tepfile/*
 !speechmodules/tepfile/.gitkeep
 openaibot/html.html
 openaibot/json.json
+openaibot/image/*
+!openaibot/image/.gitkeep

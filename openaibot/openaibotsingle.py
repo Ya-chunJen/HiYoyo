@@ -19,6 +19,7 @@ class OpenaiBotSingle:
         self.model = "gpt-3.5-turbo"
 
     def chat(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):
+        tts = text2speech.AzureTTS(voice_name)
         data = {
             "model": self.model,
             "messages": prompt_messages
@@ -26,6 +27,7 @@ class OpenaiBotSingle:
         response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
         # print(response.json())
         result = response.json()['choices'][0]['message']
+        tts.text2speech_and_play(result["content"])
         print(result["content"])
         return result
 

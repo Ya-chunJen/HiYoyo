@@ -4,7 +4,7 @@ workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 
 from speechmodules import text2speech
-tts = text2speech.AzureTTS("zh-CN-XiaoxiaoNeural")
+
 
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
@@ -12,24 +12,26 @@ configsection = config['Openai']
 
 import requests
 
-class OpenaiBotSingle:
+class OpenaiBotSingleVison:
     def __init__(self):
         self.openai_api_url = configsection['openai_api_domain'] + "/v1/chat/completions"
         self.openai_api_key = configsection['openai_api_key']
         self.headers = {"Content-Type": "application/json","Authorization": "Bearer " + self.openai_api_key}
         self.model = "gpt-4-vision-preview"
 
-    def chat(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):
+    def chat_with_image(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):
+        tts = text2speech.AzureTTS("zh-CN-XiaoxiaoNeural")
         data = {
             "model": self.model,
             "messages": prompt_messages,
             "max_tokens": 300
         }
         response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
+        print(response.text)
         print(response.json())
         result = response.json()['choices'][0]['message']
-        # tts.text2speech_and_play(result["content"])
-        # print(result["content"])
+        tts.text2speech_and_play(result["content"])
+        print(result["content"])
         return result
 
 if __name__ == '__main__':
@@ -43,6 +45,6 @@ if __name__ == '__main__':
           {"type": "image_url","image_url": image_url}
         ]
     messages=[{"role": "user", "content":prompt_with_image}]
-    openaibotsingle = OpenaiBotSingle()
-    post_message = openaibotsingle.chat(messages,"")["content"]
+    openaibotsinglevison = OpenaiBotSingleVison()
+    post_message = openaibotsinglevison.chat_with_image(messages,"")["content"]
     print(post_message)

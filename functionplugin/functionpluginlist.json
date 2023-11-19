@@ -128,5 +128,19 @@
             },
             "required": ["action"]
         }
+    },
+    {
+        "name": "videovison",
+        "description": "此插件可以调用摄像头获取一张图片，并通过AI的方式获取图片中的内容？并回复提问者关于图片的问题。",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "提问者关于这张图片的问题。"
+                }
+            },
+            "required": ["text"]
+        }
     }
 ]

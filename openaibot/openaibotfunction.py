@@ -105,7 +105,7 @@ class OpenaiBotFunction:
 
                     # 调用对应的函数，并将结果赋值给function_response
                     function_response_str = fuction_to_call(function_args)
-                    function_response = json.loads(function_response_str)
+                    function_response = function_response_str
 
                     prompt_messages.append(
                         {

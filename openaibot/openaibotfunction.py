@@ -72,23 +72,26 @@ class OpenaiBotFunction:
             # print("调用的函数：")
             # print(tools)
 
-        prompt_messages[0]['content'] = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous"
-        # print("调用函数前的prompt_message")
-        # print(prompt_messages)
+        function_prompt_messages = [{"role": "system","content":"Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous"}]
+        function_prompt_messages.append(prompt_messages[-1])
+        print("调用函数前的function_prompt_messages")
+        print(function_prompt_messages)
         data = {
             "model": "gpt-3.5-turbo-1106",
-            "messages": prompt_messages,
+            "messages": function_prompt_messages,
             "tools":tools,
             "tool_choice":tool_choice
         }
         response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
-        # print(response.json())
+        # print(response.text)
         response_message = response.json()['choices'][0]['message']
         # print(response_message)
+        return_message = []
+        return_message.append(response_message)
 
         if response_message.get("tool_calls"):
             # print("首次调用GPT，返回了JSON格式的数据。")
-            prompt_messages.append(response_message)
+            function_prompt_messages.append(response_message)
             tool_calls = response_message['tool_calls']
             for tool_call in tool_calls:
                 if tool_call['type'] == "function":
@@ -105,27 +108,27 @@ class OpenaiBotFunction:
 
                     # 调用对应的函数，并将结果赋值给function_response
                     function_response_str = fuction_to_call(function_args)
-                    function_response = function_response_str
-
-                    prompt_messages.append(
-                        {
-                            "tool_call_id": tool_call["id"],
-                            "role": "tool",
-                            "name": function_name,
-                            "content": function_response['details'],
-                        }
-                    )
+                    function_response = function_response_str["details"]
+                    function_message = {
+                        "tool_call_id": tool_call["id"],
+                        "role": "tool",
+                        "name": function_name,
+                        "content": function_response,
+                    }
+                    function_prompt_messages.append(function_message)
+                    return_message.append(function_message)
             
-            # print(prompt_messages)
-            second_response = openaibotsingleclass.chat(prompt_messages,voice_name)
+            print(function_prompt_messages)
+            second_response = openaibotsingleclass.chat(function_prompt_messages,voice_name)
             # print("再次调用一次GPT返回的结果。")
             # print(second_response)
-            return second_response
+            return_message.append(second_response)
+            return return_message
 
         else:
             # 虽然明确要求使用函数插件，但是因为信息不足等原因，还是直接返回了面向终端用户的信息。
             # print("虽然要求调用了插件，但是GPT还是返回了直接面向终端用户的信息，表示现有的信息不足以按插件要求返回JSON数据。")
-            return response_message
+            return return_message
 
 if __name__ == '__main__':
     system_content = "你是一个有用的智能助手！"
@@ -136,4 +139,8 @@ if __name__ == '__main__':
     messages=[{"role":"system","content":system_content},{"role": "user", "content":prompt}]
     openaibotfunction = OpenaiBotFunction()
     result = openaibotfunction.chat_with_funciton(messages,function_call)
-    print(result['content'])
+    if isinstance(result, list):
+        response_content = result[-1]["content"]
+    else:
+        response_content = result["content"]
+    print(response_content)

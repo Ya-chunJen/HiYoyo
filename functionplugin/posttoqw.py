@@ -14,10 +14,10 @@ def posttoqw(function_args):
     response = json.loads(response.text)
     if not(response['errcode']):
         callback_json = {"request_gpt_again":False,"details":f"已将消息推送到企业微信群。"}
-        return json.dumps(callback_json)
+        return callback_json
     else:
         callback_json = {"request_gpt_again":False,"details":f"推送消息是出错，请检查。"}
-        return json.dumps(callback_json)
+        return callback_json
 
 if __name__ == '__main__':
     function_args = {"text":"你好"}

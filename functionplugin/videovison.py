@@ -30,8 +30,9 @@ def getimagepath():
         cv2.imwrite(imagepath, frame)
     # 释放摄像头
     camera.release()
-    imageurl = aliyunossup.upfile(imagepath,"gpt4vison")
-    print(imageurl)
+    aliyunossup_args = {"file_path":imagepath,"file_dir":"gpt4vison"}
+    imageurl = aliyunossup.aliyunossup(aliyunossup_args)["details"]
+    print("捕捉到的图像：" + imageurl)
     return imageurl
 
 def videovison(function_args):
@@ -43,10 +44,10 @@ def videovison(function_args):
         ]
     messages=[{"role": "user", "content":prompt_with_image}]
     image_text_content = opanaibotsinglevisonclass.chat_with_image(messages,"zh-CN-XiaoxiaoNeural")["content"]
-    print(text_content)
+    # print(text_content)
     return {"request_gpt_again":True,"details":f"{image_text_content}"}
 
 
 if __name__ == '__main__':
-    function_args = {"text":"这张照片里有什么内容？"}
+    function_args = {"text":"你看到了什么？"}
     videovison(function_args)

@@ -25,7 +25,9 @@ bucket = oss2.Bucket(auth, 'https://oss-cn-hangzhou.aliyuncs.com', bucketname)
 # 必须以二进制的方式打开文件。
 # 填写本地文件的完整路径。如果未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件。
 
-def upfile(file_path,file_dir):
+def aliyunossup(function_args):
+    file_path = function_args['file_path']
+    file_dir = function_args['file_dir']
     with open(file_path, 'rb') as fileobj:
         # Seek方法用于指定从第1000个字节位置开始读写。上传时会从您指定的第1000个字节位置开始上传，直到文件结束。
         fileobj.seek(0, os.SEEK_SET)
@@ -35,8 +37,11 @@ def upfile(file_path,file_dir):
 
         # 填写Object完整路径。Object完整路径中不能包含Bucket名称。
         bucket.put_object(file_dir+'/'+file_name,fileobj)
-        return bucketdomain + file_dir + '/' + file_name
+        file_url = bucketdomain + file_dir + '/' + file_name
+        return {"request_gpt_again":False,"details":file_url}
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        print(upfile(sys.argv[1],sys.argv[2]))
+    file_path = input("请输入上传文件的路径：")
+    file_dir = input("请输入要上传到的目录：")
+    function_args = {"file_path":file_path,"file_dir":file_dir}
+    aliyunossup(function_args)

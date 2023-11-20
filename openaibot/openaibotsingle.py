@@ -24,9 +24,13 @@ class OpenaiBotSingle:
             "model": self.model,
             "messages": prompt_messages
         }
-        response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
-        # print(response.json())
-        result = response.json()['choices'][0]['message']
+        response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data))
+        try:
+            # print(response.json())
+            result = response.json()['choices'][0]['message']
+        except KeyError:
+            print(response.text)
+            result = {"role": "assistant","content":"Ai接口返回异常。"}
         tts.text2speech_and_play(result["content"])
         print(result["content"])
         return result

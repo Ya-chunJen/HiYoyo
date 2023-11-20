@@ -53,7 +53,7 @@ def sendemail(function_args):
     message = MIMEText(mail_body_text, 'plain', 'utf-8')  #构建纯文本邮件的内容
     send(mail_to_address,mail_subject,message) # 调用公共发送函数
     callback_json =  {"request_gpt_again":False,"details":f"已将主题为《{mail_subject}》的邮件发送给了：{mail_to_name}。"}
-    return json.dumps(callback_json)
+    return callback_json
 
 if __name__ == '__main__':
     message_body = """{

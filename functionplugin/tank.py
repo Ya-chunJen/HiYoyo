@@ -93,10 +93,10 @@ def tank(function_args):
     try:
         exec(f"{action}(duration={duration})")
         callback_json = {"request_gpt_again":False,"details":"OK"} 
-        return json.dumps(callback_json)
+        return callback_json
     except Exception as e:
         callback_json = {"request_gpt_again":False,"details":"命令解析错误！"}
-        return json.dumps(callback_json)
+        return callback_json
 
 def loop():
 	while True:

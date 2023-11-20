@@ -45,8 +45,8 @@ def videovison(function_args):
     messages=[{"role": "user", "content":prompt_with_image}]
     image_text_content = opanaibotsinglevisonclass.chat_with_image(messages,"zh-CN-XiaoxiaoNeural")["content"]
     # print(text_content)
-    return {"request_gpt_again":True,"details":f"{image_text_content}"}
-
+    callback_json = {"request_gpt_again":True,"details":f"{image_text_content}"}
+    return callback_json
 
 if __name__ == '__main__':
     function_args = {"text":"你看到了什么？"}

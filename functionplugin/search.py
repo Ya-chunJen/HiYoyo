@@ -39,7 +39,7 @@ def search(function_args):
         print("Error: ", response.status_code)
 
     callback_json =  {"request_gpt_again":True,"details":final_res}
-    return json.dumps(callback_json)
+    return callback_json
 
 if __name__ == '__main__':
     q = input("要搜索的关键词：")

@@ -13,4 +13,4 @@ def querytime(function_args):
     nowtime = '{} {} {}'.format(current_time.strftime('%Y-%m-%d %H:%M:%S'), weekday, tz.tzname(current_time))
     # print(nowtime)
     callback_json =  {"request_gpt_again":True,"details":f"<参考信息>：现在的详细时间是：{nowtime}"}
-    return json.dumps(callback_json)
+    return callback_json

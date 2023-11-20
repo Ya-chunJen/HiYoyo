@@ -5,7 +5,6 @@ import time
 import hashlib
 import configparser
 import requests
-from prettytable import PrettyTable
 import sys
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
@@ -68,7 +67,7 @@ def wjxwjlist(function_args):
     print(table)
     table_str = str(table)
     callback_json = {"request_gpt_again":True,"details":table_str}
-    return json.dumps(callback_json)
+    return callback_json
 
 if __name__ == '__main__':
     function_args = {"days":5}

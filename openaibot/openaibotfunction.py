@@ -107,13 +107,13 @@ class OpenaiBotFunction:
                     fuction_to_call = getattr(module, function_name)  # 获取函数对象
 
                     # 调用对应的函数，并将结果赋值给function_response
-                    function_response_str = fuction_to_call(function_args)
-                    function_response = function_response_str["details"]
+                    function_response = fuction_to_call(function_args)
+
                     function_message = {
                         "tool_call_id": tool_call["id"],
                         "role": "tool",
                         "name": function_name,
-                        "content": function_response,
+                        "content": function_response["details"],
                     }
                     function_prompt_messages.append(function_message)
                     return_message.append(function_message)

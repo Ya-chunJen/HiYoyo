@@ -119,8 +119,7 @@ class ErnieBotFunction:
             fuction_to_call = getattr(module, function_name)  # 获取函数对象
 
             # 调用对应的函数，并将结果赋值给function_response
-            function_response_str = fuction_to_call(function_args)
-            function_response = json.loads(function_response_str)
+            function_response = fuction_to_call(function_args)
 
             if function_response['request_gpt_again']:
                 # print("调用插件后，插件要求再调用一次GPT。")
@@ -130,7 +129,7 @@ class ErnieBotFunction:
                     {
                         "role": "function",
                         "name": function_name,
-                        "content": function_response_str,
+                        "content": function_response,
                     }
                 )
                 # print("再次调用插件时的，prompt_messages")

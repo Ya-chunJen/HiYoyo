@@ -4,8 +4,6 @@ workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(workdir)
 from speechmodules import text2speech
 
-import traceback
-
 # 读取openai的配置参数文件。
 config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")

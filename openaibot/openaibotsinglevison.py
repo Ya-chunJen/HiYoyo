@@ -9,6 +9,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['Openai']
 
+from functionplugin import aliyunossup
 import base64
 
 # 定义一个函数，可以将本地图片进行base64编码。
@@ -31,13 +32,11 @@ class OpenaiBotSingleVison:
 
         for image_item in images_list:
             # 循环图片列表中的图片。
-            if image_item.startswith("http") or image_item.startswith("https"):
-                # 判断是不是url图片，如果是url图片的话，直接加到message中。
-                messages_content_image = {"type": "image_url","image_url": {"url":image_item,"detail": "low"}}
-            else:
-                # 如果是本地图片的话，要调用函数，转为base64图片。
-                image_item_base64 = encode_image_base64(image_item)
-                messages_content_image = {"type": "image_url","image_url": {"url":f"data:image/jpeg;base64,{image_item_base64}","detail": "low"}}
+            if not(image_item.startswith("http") or image_item.startswith("https")):
+                # 判断是不是url图片，如果是本地图片的话，就调用另外一个函数，上传到阿里云oss，返回图片的URL。
+                function_args = {"file_path":image_item,"file_dir":"gpt4vison"}
+                image_item = aliyunossup.aliyunossup(function_args)["details"]
+            messages_content_image = {"type": "image_url","image_url": {"url":image_item,"detail": "low"}}
             messages_content.append(messages_content_image)
 
         # 构造URL请求的数据部分。

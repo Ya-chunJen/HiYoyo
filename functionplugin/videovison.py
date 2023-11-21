@@ -36,16 +36,13 @@ def getimagepath():
     return imageurl
 
 def videovison(function_args):
-    text_content = function_args['text']
+    prompt = function_args['text']
     imageurl = getimagepath()
-    prompt_with_image = [
-          {"type": "text","text": text_content},
-          {"type": "image_url","image_url": imageurl}
-        ]
-    messages=[{"role": "user", "content":prompt_with_image}]
-    image_text_content = opanaibotsinglevisonclass.chat_with_image(messages,"zh-CN-XiaoxiaoNeural")["content"]
-    # print(text_content)
-    callback_json = {"request_gpt_again":True,"details":f"{image_text_content}"}
+    images_list = [imageurl]
+
+    ai_image_response_content = opanaibotsinglevisonclass.chat_with_image(images_list,prompt)["content"]
+    # print(ai_image_response_content)
+    callback_json = {"request_gpt_again":True,"details":f"{ai_image_response_content}"}
     return callback_json
 
 if __name__ == '__main__':

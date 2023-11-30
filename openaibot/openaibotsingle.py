@@ -10,12 +10,12 @@ config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
 configsection = config['Openai']
 
 class OpenaiBotSingle:
-    def __init__(self):
+    def __init__(self,modelname = "gpt-3.5-turbo-1106"):
         # 从配置文件中，读取openai的api域名和key，并构造URL请求的头部。
         self.openai_api_url = configsection['openai_api_domain'] + "/v1/chat/completions"
         self.openai_api_key = configsection['openai_api_key']
         self.headers = {"Content-Type": "application/json","Authorization": "Bearer " + self.openai_api_key}
-        self.model = "gpt-3.5-turbo-1106" # 定义模型的名称，可能会随着时间而更新。
+        self.model = modelname # 定义模型的名称，可能会随着时间而更新。
 
     def chat(self,prompt_messages,voice_name="zh-CN-XiaoxiaoNeural"):
         # 定义对话的函数，并初始化tts,如果初始化tts时，没有音色的配置，tts就不会生效。

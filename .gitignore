@@ -24,3 +24,4 @@ openaibot/html.html
 openaibot/json.json
 openaibot/image/*
 !openaibot/image/.gitkeep
+openaibot/wjxsurveyanalysis.py

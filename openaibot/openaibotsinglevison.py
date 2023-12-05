@@ -34,8 +34,8 @@ class OpenaiBotSingleVison:
             # 循环图片列表中的图片。
             if not(image_item.startswith("http") or image_item.startswith("https")):
                 # 判断是不是url图片，如果是本地图片的话，就调用另外一个函数，上传到阿里云oss，返回图片的URL。
-                function_args = {"file_path":image_item,"file_dir":"gpt4vison"}
-                image_item = aliyunossup.aliyunossup(function_args)["details"]
+                aliyunossup_function_args = {"local_file_path":image_item,"oss_file_dir":"gpt4vison"}
+                image_item = aliyunossup.aliyunossup(aliyunossup_function_args)["details"]
             messages_content_image = {"type": "image_url","image_url": {"url":image_item,"detail": "low"}}
             messages_content.append(messages_content_image)
 

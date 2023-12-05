@@ -44,7 +44,7 @@ class OpenaiBotMult:
         # 调用支持函数的单轮会话模块获取结果。
         response_dit = openaibotfunctionclass.chat_with_funciton(messages_thistime,functionname,voice_name) 
         
-        print(response_dit)
+        # print(response_dit)
         # 将本次的回答和历史记录整合
         if isinstance(response_dit, list):
             for response_dit_item in response_dit:
@@ -63,8 +63,8 @@ class OpenaiBotMult:
 
 if __name__ == '__main__':
     username = "You"
-    prompt =  input("请输入你的问题：") or "通过摄像头，你又看到了什么？"
+    prompt =  input("请输入你的问题：") or "将「我爱你」这条消息推送到企业微信中。"
     system_content = "你的名字叫Yoyo，是一个智能助手。和我对话时，你可以通过调用videovison插件，看到外部世界。回答字数控制在100个字以内。"
-    functionname = ["videovison"]
+    functionname = ["posttoqw"]
     openaibotmult = OpenaiBotMult()
     openaibotmult.chatmult(username,prompt,system_content,functionname)

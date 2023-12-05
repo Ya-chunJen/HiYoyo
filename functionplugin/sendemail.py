@@ -35,31 +35,28 @@ contacts = [
 def sendemail(function_args):
     # mailcontent = json.loads(mailcontent)
     mail_to_name = function_args['mail_to_name']
+    mail_subject = function_args['mail_subject']
+    mail_body_text = function_args['mail_body_text']
+    message = MIMEText(mail_body_text, 'plain', 'utf-8')  #构建纯文本邮件的内容
 
     contact_names = [contact['name'] for contact in contacts]
     if mail_to_name not in contact_names:
         callback_json =  {"request_gpt_again":False,"details":f"在你的联系人列表中没有找到{mail_to_name}"}
-        return json.dumps(callback_json)
+        return callback_json
     else:
         for contact in contacts:
             if contact['name'] == mail_to_name:
                 mail_to_address  = contact['email']
+                send(mail_to_address,mail_subject,message) # 调用公共发送函数
                 break
-
-    mail_subject = function_args['mail_subject']
-    mail_body_text = function_args['mail_body_text']
-
-    # 定义发送纯文本的邮件
-    message = MIMEText(mail_body_text, 'plain', 'utf-8')  #构建纯文本邮件的内容
-    send(mail_to_address,mail_subject,message) # 调用公共发送函数
     callback_json =  {"request_gpt_again":False,"details":f"已将主题为《{mail_subject}》的邮件发送给了：{mail_to_name}。"}
     return callback_json
 
 if __name__ == '__main__':
-    message_body = """{
+    message_body = {
         "mail_to_name":"张三",
         "mail_subject":"我已安全到家！",
         "mail_body_text":"我已安全到家，勿念。"
     }
-    """
+    
     sendemail(message_body)

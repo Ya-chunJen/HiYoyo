@@ -49,7 +49,11 @@ class OpenaiBotImage:
             return None
         
 if __name__ == '__main__':
-    prompt = input("请输入你的问题：") or "玩具酒桶"
+    if len(sys.argv) > 1:
+        prompt = sys.argv[1]
+    else:
+        prompt = input("请输入你的问题：") or "玩具酒桶"
+        
     openaibotimage = OpenaiBotImage()
     post_message = openaibotimage.create_image(prompt)
     print(post_message)

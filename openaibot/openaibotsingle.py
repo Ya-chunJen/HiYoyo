@@ -32,6 +32,11 @@ class OpenaiBotSingle:
             try:         
                 # 使用try处理异常情况，因为api的请求返回的数据，可能会由于内容过滤等原因，返回
                 ai_response_dict = ai_response.json()['choices'][0]['message']
+
+                # 打印一下token用量的信息
+                # ai_response_usage = ai_response.json()["usage"]
+                # print(ai_response_usage)
+
             except Exception as e:
                 # 如果返回的是异常数据，就打印一下返回的文本内容。并且构造一个相同字典结构的返回数据，以使程序正确运行。
                 print(ai_response.text) 

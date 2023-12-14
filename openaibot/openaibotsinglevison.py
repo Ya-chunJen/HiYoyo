@@ -68,10 +68,9 @@ class OpenaiBotSingleVison:
         return ai_image_response_dict # 函数返回的数据是字典类型的数据，而不是文本数据。
 
 if __name__ == '__main__':
-    image_url_1  = input("请输入图片1的URL：") or "https://helpimage.paperol.cn/20231121160216.png"
-    image_url_2  = input("请输入图片2的URL：") or "https://helpimage.paperol.cn/20231121160216.png"
+    image_url  = input("请输入图片1的URL：") or "https://helpimage.paperol.cn/20231121160216.png"
     prompt = input("请输入你针对图片的提问：") or "这张图片内包含了什么内容？"
-    images_list = [image_url_1,image_url_2]
+    images_list = [image_url]
     openaibotsinglevison = OpenaiBotSingleVison()
     ai_image_response_content = openaibotsinglevison.chat_with_image(images_list,prompt)["content"]
     # print(ai_image_response_content) # 函数中打印了结果，这里就不打印了。

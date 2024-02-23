@@ -18,19 +18,7 @@ class OpenaiBotImage:
         self.headers = {"Content-Type": "application/json","Authorization": "Bearer " + self.openai_api_key}
         self.model = "dall-e-3"
 
-    def create_image(self,prompt_messages):
-        size_list  = ['256x256', '512x512', '1024x1024', '1024x1792', '1792x1024']
-        data = {
-            "model": self.model,
-            "prompt": prompt_messages,
-            "n": 1,
-            "size": "1024x1024"
-        }
-        ai_image_response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
-
-        # print(ai_image_response.json())
-        ai_image_url = ai_image_response.json()['data'][0]['url'] # 限制只返回一张图片
-
+    def getandpost_image(self,ai_image_url):
         # 请求图片url下载保存到本地
         image_data = requests.get(ai_image_url)
         if image_data.status_code == 200:
@@ -47,6 +35,23 @@ class OpenaiBotImage:
         else:
             print("图片下载失败。")
             return None
+
+    def create_image(self,prompt_messages):
+        size_list  = ['256x256', '512x512', '1024x1024', '1024x1792', '1792x1024']
+        data = {
+            "model": self.model,
+            "prompt": prompt_messages,
+            "n": 1,
+            "size": "1024x1792"
+        }
+        ai_image_response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
+
+        # print(ai_image_response.json())
+        ai_image_url = ai_image_response.json()['data'][0]['url'] # 限制只返回一张图片
+        # 将获取到的图片下载、上传、推送
+        self.getandpost_image(ai_image_url)
+
+
         
 if __name__ == '__main__':
     if len(sys.argv) > 1:

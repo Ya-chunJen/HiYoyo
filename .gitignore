@@ -4,6 +4,7 @@ config.ini
 bin/
 include/
 lib/
+venv
 pyvenv.cfg
 azurebot/__pycache__/
 snowboy/__pycache__/

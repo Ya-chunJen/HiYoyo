@@ -37,22 +37,32 @@ class OpenaiBotImage:
             return None
 
     def create_image(self,prompt_messages):
-        size_list  = ['256x256', '512x512', '1024x1024', '1024x1792', '1792x1024']
+        size_list  = ['1024x1024', '1024x1792', '1792x1024']
+        if "竖版" in prompt_messages:
+            sizeindex = 1
+            prompt_messages = prompt_messages.replace("竖版", "")
+        elif "横版" in prompt_messages:
+            sizeindex = 2
+            prompt_messages = prompt_messages.replace("横版", "")
+        else:
+            sizeindex = 0
         data = {
             "model": self.model,
             "prompt": prompt_messages,
             "n": 1,
-            "size": "1024x1792"
+            "size": size_list[sizeindex]
         }
         ai_image_response = requests.post(self.openai_api_url, headers=self.headers, data=json.dumps(data)) 
 
         # print(ai_image_response.json())
-        ai_image_url = ai_image_response.json()['data'][0]['url'] # 限制只返回一张图片
-        # 将获取到的图片下载、上传、推送
-        self.getandpost_image(ai_image_url)
+        try:
+            ai_image_url = ai_image_response.json()['data'][0]['url'] # 限制只返回一张图片
+            # 将获取到的图片下载、上传、推送
+            ai_oss_image_url = self.getandpost_image(ai_image_url)
+            return ai_oss_image_url
+        except:
+            return "获取图片失败!请检查！"
 
-
-        
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         prompt = sys.argv[1]

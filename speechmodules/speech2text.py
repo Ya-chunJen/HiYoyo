@@ -1,51 +1,42 @@
-import os,json,sys,configparser
+# -*- coding: utf-8 -*-
+"""Azure 语音转文字（ASR），支持中/英/日自动识别。"""
 import azure.cognitiveservices.speech as speechsdk
 
-workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(workdir)
+from core import config
 
-config = configparser.ConfigParser()
-config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
-audio_file_path = os.path.join(workdir, "speechfile/speech.wav")
 
 class AzureASR:
     def __init__(self):
-        self.AZURE_API_KEY = config['AzureSpeech']['AZURE_API_KEY']
-        self.AZURE_REGION = config['AzureSpeech']['AZURE_REGION']
+        speech_cfg = config.azure_speech()
         self.speech_config = speechsdk.SpeechConfig(
-            subscription=self.AZURE_API_KEY,
-            region=self.AZURE_REGION
-            )
-        #self.speech_config.speech_recognition_language = "zh-CN"
+            subscription=speech_cfg["api_key"], region=speech_cfg["region"])
 
-    def speech2text(self, audio_path: str = audio_file_path, if_microphone: bool = True):       
-        audio_config_recognizer = speechsdk.audio.AudioConfig(use_default_microphone=True)
-        auto_detect_source_language_config = speechsdk.languageconfig.AutoDetectSourceLanguageConfig(languages=["zh-CN","en-US", "ja-JP"])
-        speech_recognizer = speechsdk.SpeechRecognizer(
+    def speech2text(self) -> str:
+        """从默认麦克风录音并识别为文字；未识别到内容时返回 None。"""
+        audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+        auto_detect = speechsdk.languageconfig.AutoDetectSourceLanguageConfig(
+            languages=["zh-CN", "en-US", "ja-JP"])
+        recognizer = speechsdk.SpeechRecognizer(
             speech_config=self.speech_config,
-            audio_config=audio_config_recognizer,
-            auto_detect_source_language_config=auto_detect_source_language_config,
-            )             
+            audio_config=audio_config,
+            auto_detect_source_language_config=auto_detect,
+        )
         print("system:正在聆听...")
-        speech_recognition_result = speech_recognizer.recognize_once_async().get()
+        result = recognizer.recognize_once_async().get()
 
-        if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
-            # print("You:{}".format(speech_recognition_result.text))
-            return speech_recognition_result.text
-        elif speech_recognition_result.reason == speechsdk.ResultReason.NoMatch:
-            print("system:未侦测到语音,已退出监听。如需使用，请用唤醒词重新唤醒。")
-            # print("system:未侦测到语音，详细信息 :{}".format(speech_recognition_result.no_match_details))
-        elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
-            cancellation_details = speech_recognition_result.cancellation_details
-            print("system:未侦测到语音,已退出监听。如需使用，请用唤醒词重新唤醒。")
-            # print("system:未侦测到语音，详细信息:{}".format(cancellation_details.reason))
-            if cancellation_details.reason == speechsdk.CancellationReason.Error:
-                print("Error details:{}".format(cancellation_details.error_details))
-                print("Did you set the speech resource key and region values?")
-        # os.remove(audio_file_path)
+        if result.reason == speechsdk.ResultReason.RecognizedSpeech:
+            return result.text
+        elif result.reason == speechsdk.ResultReason.NoMatch:
+            print("system:未侦测到语音，已退出监听。如需使用，请用唤醒词重新唤醒。")
+        elif result.reason == speechsdk.ResultReason.Canceled:
+            details = result.cancellation_details
+            print("system:未侦测到语音，已退出监听。如需使用，请用唤醒词重新唤醒。")
+            if details.reason == speechsdk.CancellationReason.Error:
+                print(f"system:错误详情：{details.error_details}")
+                print("system:请检查 AzureSpeech 的 key 和 region 配置。")
         return None
+
 
 if __name__ == "__main__":
     asr = AzureASR()
-    result = asr.speech2text()
-    print(result)
+    print(asr.speech2text())

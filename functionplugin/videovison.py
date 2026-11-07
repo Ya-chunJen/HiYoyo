@@ -1,50 +1,45 @@
-import os,json,sys,configparser
+# -*- coding: utf-8 -*-
+"""videovison 插件：调用摄像头拍一张照片，让多模态模型「看到」外部世界。
+
+需要在 config.ini 的 [LLM] vision_model 中配置一个支持图片输入的模型，
+例如 gpt-4o-mini / qwen-vl-plus / glm-4v-flash 等。
+"""
+import os
 import cv2
 from datetime import datetime
 
 workdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(workdir)
 
-from openaibot.openaibotsinglevison import OpenaiBotSingleVison
-from functionplugin import aliyunossup
+# 摄像头照片的临时保存目录
+VISION_DIR = os.path.join(workdir, "log", "vision")
 
-opanaibotsinglevisonclass = OpenaiBotSingleVison()
 
-# 获取当前时间
-now = datetime.now()
-
-# 格式化为字符串
-time_str = now.strftime("%Y-%m-%d-%H-%M-%S")
-
-def getimagepath():
-    # 打开默认摄像头，参数0表示设备编号，如果有多个摄像头，则可能需要选择不同的编号
+def getimagepath() -> str:
+    """打开默认摄像头，抓拍一帧并保存为 jpg。"""
+    os.makedirs(VISION_DIR, exist_ok=True)
     camera = cv2.VideoCapture(0)
-    # 设置摄像头的分辨率
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    # 读取一帧图像
     success, frame = camera.read()
-    # 如果读取成功，则保存图像到本地文件
-    imagepath = f"{workdir}/openaibot/image/photo{time_str}.jpg"
-    if success:
-        cv2.imwrite(imagepath, frame)
-    # 释放摄像头
     camera.release()
-    aliyunossup_args = {"file_path":imagepath,"file_dir":"gpt4vison"}
-    imageurl = aliyunossup.aliyunossup(aliyunossup_args)["details"]
-    print("捕捉到的图像：" + imageurl)
-    return imageurl
+    if not success:
+        raise RuntimeError("摄像头抓拍失败，请检查摄像头设备。")
+    time_str = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    imagepath = os.path.join(VISION_DIR, f"photo{time_str}.jpg")
+    cv2.imwrite(imagepath, frame)
+    print("system:已抓拍照片：" + imagepath)
+    return imagepath
+
 
 def videovison(function_args):
-    prompt = function_args['text']
-    imageurl = getimagepath()
-    images_list = [imageurl]
+    from core.llm import LLMClient
 
-    ai_image_response_content = opanaibotsinglevisonclass.chat_with_image(images_list,prompt)["content"]
-    # print(ai_image_response_content)
-    callback_json = {"request_gpt_again":True,"details":f"{ai_image_response_content}"}
-    return callback_json
+    prompt = function_args.get("text", "这张图片包含了什么内容？")
+    imagepath = getimagepath()
+    llm = LLMClient()
+    answer = llm.chat_with_image([imagepath], prompt)
+    return {"request_gpt_again": True, "details": answer}
+
 
 if __name__ == '__main__':
-    function_args = {"text":"你看到了什么？"}
-    videovison(function_args)
+    print(videovison({"text": "你看到了什么？"}))

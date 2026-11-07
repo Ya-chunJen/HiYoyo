@@ -1,111 +1,115 @@
-import os,json,sys,configparser
+# -*- coding: utf-8 -*-
+"""HiYoyo 智能音箱 - 语音模式主程序。
 
-workdir = os.path.dirname(os.path.realpath(__file__))
+流程：唤醒词唤醒 -> Azure ASR 语音转文字 -> LLM（可带插件）流式回答
+-> 分句 TTS 朗读；对话中说出其他角色的关键词即可切换角色，
+说出停止词或保持沉默则进入睡眠。
+"""
+import sys
+
+from core import config
+from core.config import workdir
 sys.path.append(workdir)
 
+from core.llm import LLMClient
+from core.robots import RobotManager
+from core.tts import TTS, SentenceSpeaker
+from core.conversation import Conversation
 from speechmodules.speech2text import AzureASR
-from speechmodules.text2speech import AzureTTS
-from azurebot.azurebotmult import AzureBotMult
-from erniebot.erniebotmult import ErnieBotMult
-from openaibot.openaibotmult import OpenaiBotMult
 
-config = configparser.ConfigParser()
-config.read(os.path.join(workdir, "config.ini"),encoding="UTF-8")
-robot_info_file_path = os.path.join(workdir, "robot_info.json")
-aimanufacturer = config["AI"]["aimanufacturer"]
-if aimanufacturer == "azurebot":
-    chatmult = AzureBotMult()
-elif aimanufacturer == "erniebot":
-    chatmult = ErnieBotMult()
-elif aimanufacturer == "openaibot":
-    chatmult = OpenaiBotMult()
-
-# 增加程序启动时的开机广告，并且告知用户智能音箱的唤醒词。
-print(f"system:叮叮当当！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
-AzureTTS("zh-CN-XiaoxiaoNeural").text2speech_and_play(f"叮叮当当！我的唤醒词是：{config['Wakeword']['wakewordtext']}")
-
-# 这是用于判断一个字符串中，是不是包含一个列表中的任意词，如果包含就会返回列表中的这个元素。
-# 实际业务上，是判断语音转为文字的内容，是不是包含任意一个智能语音助手的激活关键词。
-def find_robot_keyword(s,lst):
-    for elem in lst:
-        if elem in s:
-            return elem
-    return None
 
 class Yoyo:
     def __init__(self):
-        with open(robot_info_file_path , 'r' ,encoding="UTF-8") as f:
-            # 导入智能助手的配置文件。
-            self.robot_info = json.load(f)
-            self.robot_id_list = [d['robot_id'] for d in self.robot_info]
-            self.robot_keywords_list = [d['robot_keyword'] for d in self.robot_info]
-
-    def robot_model(self,robot_id="xiaozhushou"):
-        # 主要用于判断加载哪一个智能语音助手。
-        try:
-            robot_index = self.robot_id_list.index(robot_id)
-        except ValueError:
-            raise SystemExit("没有此配置的机器人！")
-
-        self.robot_name = self.robot_info[robot_index ]['robot_name']
-        self.robot_describe = self.robot_info[robot_index ]['robot_describe']
-        self.robot_voice_name = self.robot_info[robot_index ]['robot_voice_name']
-        self.robot_reply_word = self.robot_info[robot_index ]['robot_reply_word']
-        self.robot_system_content = self.robot_info[robot_index ]['robot_system_content']
-        self.username = self.robot_info[robot_index ]['username']
-        self.robot_function_model = self.robot_info[robot_index ]['robot_function_model']
-
+        self.robots = RobotManager()
+        self.llm = LLMClient()
         self.asr = AzureASR()
-        self.tts = AzureTTS(self.robot_voice_name)
-        self.stopword = config['Wakeword']['StopWord']
-        if config['Wakeword']['WakeUpScheme'] == "Picovoice":            
-            from picovoice.wakeword import PicoWakeWord
-            self.wakeword = PicoWakeWord()      
-        elif config['Wakeword']['WakeUpScheme'] == "Snowboy":
-            from snowboy.wakeword import SnowboyWakeWord
-            self.wakeword = SnowboyWakeWord()  
-        else:
-            raise SystemExit("config.ini配置文件中，WakeUpScheme可选值只有：Picovoice和 Snowboy")
+        self.stopword = config.wakeword()["stopword"]
+        self.robots.default()
+
+    # ---------- 唤醒词 ----------
+
+    def _setup_wakeword(self):
+        ww = config.wakeword()
+        scheme = ww["scheme"].lower()
+
+        if scheme == "keyboard":
+            from core.wakeword_keyboard import KeyboardWakeWord
+            self.wakeword = KeyboardWakeWord()
+            return
+
+        if scheme == "openwakeword":
+            from core.wakeword_openwakeword import OpenWakeWordEngine
+            self.wakeword = OpenWakeWordEngine()
+            return
+
+        raise SystemExit("config.ini 中 WakeUpScheme 可选值：OpenWakeWord / Keyboard")
+
+    # ---------- 对话 ----------
+
+    def chat(self, question: str):
+        """处理一轮对话：历史 -> LLM（可带插件）-> 流式打印 + 分句朗读 -> 存档。"""
+        robot = self.robots.current
+        tts = TTS(robot.get("voice", ""))
+        # 纯文本音色（voice 为空）时不启用朗读
+        speaker = SentenceSpeaker(tts) if robot.get("voice", "") else None
+
+        conv = Conversation(robot.get("username") or robot["id"])
+        conv.append({"role": "user", "content": question})
+
+        messages = conv.build(robot["system"])
+        model = robot.get("model") or None
+        answer = self.llm.chat_with_plugins(messages, robot.get("plugins"), speaker=speaker, model=model)
+
+        conv.append({"role": "assistant", "content": answer})
+        conv.save()
+
+    # ---------- 主循环 ----------
 
     def run(self):
-        while True:
-            isdetected = self.wakeword.detect_wake_word() # 持续监测麦克风收录的声音是不是包含唤醒词，监测到后会返回大于0的整数。如果没有监测到就持续监测。
-            if isdetected >= 0:
-                # 唤醒后，打印和播放当前智能语音助手的打招呼语。
-                print(f'{self.robot_name}:{self.robot_reply_word}')  
-                self.tts.text2speech_and_play(self.robot_reply_word)
-                keepawake = True # 用于控制智能语音助手是不是保持持续对话模式，为假的话会进入睡眠模式，睡眠模式下需要用唤醒词重新唤醒。
-                while keepawake:         
-                    q = self.asr.speech2text() # 获取用户输入的内容，由录音转为文字。
-                    if q == None or self.stopword in q:
-                        # 判断录入的内容是不是空值，或者录入的录入的内容是不是包含“停止词”。如果为空或者包含停止词，则进入睡眠模式。
-                        print(f'{self.username}:{q}')
-                        print(f"{self.robot_name}:拜拜，有事用唤醒词叫我。")
-                        self.tts.text2speech_and_play(f"拜拜，有事用唤醒词叫我。")
-                        print("system:已经进入睡眠模式！")                        
-                        keepawake = False
-                    else:
-                        robot_keyword = find_robot_keyword(q,self.robot_keywords_list) #判断用户录入的内容是不是包含任意一个智能语音助手的激活关键词。如果不包含，就请求ChatGPT的结果。如果包含，就切换到对应的智能语音助手。
-                        if robot_keyword == None:
-                            print(f'{self.username}:{q}') # 打印用户录入的内容
-                            res = chatmult.chatmult(self.username,q,self.robot_system_content,self.robot_function_model,self.robot_voice_name) # 请求ChatGPT的接口。
-                            print(f'{self.robot_name}(GPT)：{res}')   # 打印返回的结果。
-                            # self.tts.text2speech_and_play(res)   # 朗读返回的结果。
-                        else:
-                            switch_robot_index = self.robot_keywords_list.index(robot_keyword)
-                            switch_robot_id = self.robot_info[switch_robot_index]["robot_id"] # 确定要切换到哪一个智能语音助手。
-                            self.robot_model(switch_robot_id)   #切换智能语音助手。
-                            print(f"system:已切换到「{robot_keyword}」。")
-                            self.tts.text2speech_and_play(f"已切换到「{robot_keyword}」")
-                            # keepawake = False #原本切换智能语音助手后需要重新唤醒，现在应该不需要了。                                           
+        robot = self.robots.current
+        print(f"system:叮叮当当！我的唤醒词是：{config.wakeword()['wakewordtext']}")
+        TTS("edge:zh-CN-XiaoxiaoNeural").speak(
+            f"叮叮当当！我的唤醒词是：{config.wakeword()['wakewordtext']}")
 
-    def loop(self,):
+        while True:
+            # 持续监测唤醒词，未监测到则保持监听
+            if self.wakeword.detect_wake_word() < 0:
+                continue
+
+            print(f"{robot['name']}:{robot['greeting']}")
+            TTS(robot.get("voice", "")).speak(robot["greeting"])
+
+            keep_awake = True
+            while keep_awake:
+                question = self.asr.speech2text()
+                if not question or self.stopword in question:
+                    print(f"{robot.get('username', 'You')}:{question}")
+                    print(f"system:拜拜，有事用唤醒词叫我。已进入睡眠模式！")
+                    TTS(robot.get("voice", "")).speak("拜拜，有事用唤醒词叫我。")
+                    keep_awake = False
+                    continue
+
+                # 判断是否要切换角色
+                target = self.robots.find_keyword(question)
+                if target is not None:
+                    self.robots.switch(target["id"])
+                    robot = self.robots.current
+                    print(f"system:已切换到「{target['keyword']}」。")
+                    TTS(robot.get("voice", "")).speak(f"已切换到「{target['keyword']}」，{robot['greeting']}")
+                    continue
+
+                print(f"{robot.get('username', 'You')}:{question}")
+                self.chat(question)
+
+    def loop(self):
+        self._setup_wakeword()
         while True:
             try:
-                self.robot_model()
                 self.run()
             except KeyboardInterrupt:
+                print("\nsystem:再见！")
                 break
+
 
 if __name__ == '__main__':
     yoyo = Yoyo()

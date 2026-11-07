@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f6f7fb">
+<title>HiYoyo 智能助手</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --panel: #ffffff;
+    --text: #1c1e26;
+    --text-2: #8a8f9c;
+    --primary: #4f6ef2;
+    --primary-soft: #e8edff;
+    --bubble-ai: #ffffff;
+    --bubble-user: #4f6ef2;
+    --border: #e8eaf1;
+    --radius: 18px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101218; --panel: #1a1d26; --text: #e8eaf2; --text-2: #8a8f9c;
+      --primary: #6b85ff; --primary-soft: #232840;
+      --bubble-ai: #1a1d26; --bubble-user: #4f6ef2; --border: #262a36;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: var(--bg); color: var(--text);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  header {
+    padding: calc(10px + var(--safe-top)) 16px 10px;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px; z-index: 10;
+  }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(135deg, #4f6ef2, #8a5cf6);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 600;
+  }
+  .head-info { flex: 1; min-width: 0; }
+  .head-name { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .head-desc { font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icon-btn {
+    width: 36px; height: 36px; border: none; border-radius: 10px; flex-shrink: 0;
+    background: var(--primary-soft); color: var(--primary); font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:active { opacity: .7; }
+
+  /* ---------- 消息区 ---------- */
+  #chat {
+    flex: 1; overflow-y: auto; padding: 16px 14px 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .msg { display: flex; margin-bottom: 14px; gap: 8px; animation: fadein .25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .msg .avatar { width: 30px; height: 30px; font-size: 13px; border-radius: 10px; align-self: flex-end; }
+  .bubble {
+    max-width: 78%; padding: 10px 14px; border-radius: var(--radius);
+    font-size: 15px; line-height: 1.65; word-break: break-word; white-space: pre-wrap;
+  }
+  .msg.ai .bubble { background: var(--bubble-ai); border: 1px solid var(--border); border-bottom-left-radius: 6px; }
+  .msg.user { flex-direction: row-reverse; }
+  .msg.user .bubble { background: var(--bubble-user); color: #fff; border-bottom-right-radius: 6px; }
+  .msg.system { justify-content: center; }
+  .msg.system .bubble {
+    background: transparent; border: none; color: var(--text-2);
+    font-size: 12px; padding: 2px; max-width: 90%; text-align: center;
+  }
+  .cursor { display: inline-block; width: 7px; height: 15px; background: var(--primary);
+    border-radius: 2px; vertical-align: -2px; animation: blink .8s infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- 输入区 ---------- */
+  footer {
+    padding: 10px 12px calc(10px + var(--safe-bottom));
+    background: var(--panel); border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  #input {
+    flex: 1; resize: none; border: 1px solid var(--border); border-radius: 14px;
+    background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.5;
+    padding: 9px 14px; max-height: 110px; outline: none; font-family: inherit;
+  }
+  #input:focus { border-color: var(--primary); }
+  #send {
+    border: none; border-radius: 14px; background: var(--primary); color: #fff;
+    font-size: 15px; font-weight: 500; padding: 10px 18px; cursor: pointer; flex-shrink: 0;
+  }
+  #send:disabled { opacity: .45; }
+
+  /* ---------- 角色抽屉 ---------- */
+  #mask {
+    position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 20;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  #mask.show { opacity: 1; pointer-events: auto; }
+  #sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 21;
+    background: var(--panel); border-radius: 22px 22px 0 0;
+    max-height: 72vh; display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform .28s cubic-bezier(.3,.9,.4,1);
+    padding-bottom: var(--safe-bottom);
+  }
+  #sheet.show { transform: none; }
+  .sheet-head {
+    padding: 16px 20px 10px; font-size: 15px; font-weight: 600;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sheet-head span:last-child { color: var(--text-2); font-weight: 400; font-size: 13px; }
+  #robot-list { overflow-y: auto; padding: 0 12px 16px; }
+  .robot-item {
+    display: flex; align-items: center; gap: 12px; padding: 11px 10px;
+    border-radius: 14px; cursor: pointer;
+  }
+  .robot-item:active { background: var(--primary-soft); }
+  .robot-item.active { background: var(--primary-soft); }
+  .robot-item .rname { font-size: 15px; font-weight: 500; }
+  .robot-item .rdesc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .robot-item .check { margin-left: auto; color: var(--primary); font-weight: 700; visibility: hidden; }
+  .robot-item.active .check { visibility: visible; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="avatar" id="head-avatar">Yo</div>
+  <div class="head-info">
+    <div class="head-name" id="head-name">HiYoyo</div>
+    <div class="head-desc" id="head-desc">正在连接…</div>
+  </div>
+  <button class="icon-btn" id="btn-clear" title="清空对话">🗑</button>
+  <button class="icon-btn" id="btn-robots" title="切换角色">☰</button>
+</header>
+
+<div id="chat"></div>
+
+<footer>
+  <textarea id="input" rows="1" placeholder="输入消息…" enterkeyhint="send"></textarea>
+  <button id="send">发送</button>
+</footer>
+
+<div id="mask"></div>
+<div id="sheet">
+  <div class="sheet-head"><span>切换智能语音角色</span><span>对话中说出关键词也可切换</span></div>
+  <div id="robot-list"></div>
+</div>
+
+<script>
+const chatEl = document.getElementById('chat');
+const inputEl = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+let currentRobot = null;
+let sending = false;
+
+// ---------- 工具 ----------
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function scrollBottom(force) {
+  const near = chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 120;
+  if (near || force) chatEl.scrollTop = chatEl.scrollHeight;
+}
+function addBubble(role, text) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  if (role !== 'system') {
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.textContent = role === 'ai' ? (currentRobot ? currentRobot.name.slice(0,1) : 'Yo') : '我';
+    div.appendChild(av);
+  }
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  b.textContent = text;
+  div.appendChild(b);
+  chatEl.appendChild(div);
+  scrollBottom(true);
+  return b;
+}
+
+// ---------- 角色 ----------
+async function loadRobots() {
+  const res = await fetch('/api/robots');
+  const data = await res.json();
+  currentRobot = data.robots.find(r => r.id === data.current);
+  renderHead();
+  renderList(data.robots);
+}
+function renderHead() {
+  document.getElementById('head-name').textContent = currentRobot.name;
+  document.getElementById('head-desc').textContent = currentRobot.description;
+  document.getElementById('head-avatar').textContent = currentRobot.name.slice(0, 2);
+}
+function renderList(robots) {
+  const list = document.getElementById('robot-list');
+  list.innerHTML = '';
+  for (const r of robots) {
+    const item = document.createElement('div');
+    item.className = 'robot-item' + (r.id === currentRobot.id ? ' active' : '');
+    item.innerHTML = `<div><div class="rname">${escapeHtml(r.name)}</div>
+      <div class="rdesc">${escapeHtml(r.description)}</div></div>
+      <span class="check">✓</span>`;
+    item.onclick = async () => {
+      await fetch('/api/switch', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: r.id})});
+      closeSheet();
+      currentRobot = r;
+      renderHead();
+      addBubble('system', `已切换到「${r.name}」`);
+      if (r.greeting) addBubble('ai', r.greeting);
+    };
+    list.appendChild(item);
+  }
+}
+
+// ---------- 抽屉 ----------
+const sheet = document.getElementById('sheet'), mask = document.getElementById('mask');
+function openSheet(){ sheet.classList.add('show'); mask.classList.add('show'); }
+function closeSheet(){ sheet.classList.remove('show'); mask.classList.remove('show'); }
+document.getElementById('btn-robots').onclick = openSheet;
+mask.onclick = closeSheet;
+
+// ---------- 清空 ----------
+document.getElementById('btn-clear').onclick = async () => {
+  if (!confirm('确定清空当前角色的对话历史吗？')) return;
+  await fetch('/api/clear', {method:'POST'});
+  chatEl.innerHTML = '';
+  addBubble('system', '对话历史已清空');
+};
+
+// ---------- 发送 ----------
+async function send() {
+  const text = inputEl.value.trim();
+  if (!text || sending) return;
+  sending = true; sendBtn.disabled = true; inputEl.value = ''; inputEl.style.height = 'auto';
+  addBubble('user', text);
+
+  const bubble = addBubble('ai', '');
+  bubble.innerHTML = '<span class="cursor"></span>';
+  let answer = '';
+  const cursor = bubble.querySelector('.cursor');
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({text})
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({error: '请求失败'}));
+      throw new Error(err.error || '请求失败');
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, {stream: true});
+      const parts = buf.split('\n\n');
+      buf = parts.pop();
+      for (const part of parts) {
+        if (!part.startsWith('data: ')) continue;
+        const evt = JSON.parse(part.slice(6));
+        if (evt.type === 'delta') {
+          answer += evt.delta;
+          bubble.textContent = answer;
+          bubble.appendChild(cursor);
+          scrollBottom();
+        } else if (evt.type === 'status') {
+          bubble.textContent = '… ' + evt.text;
+          bubble.appendChild(cursor);
+        } else if (evt.type === 'error') {
+          answer = answer || ('出错：' + evt.message);
+          bubble.textContent = answer;
+        }
+      }
+    }
+    bubble.textContent = answer || '（空回复）';
+  } catch (e) {
+    bubble.textContent = '出错：' + e.message;
+  } finally {
+    sending = false; sendBtn.disabled = false;
+    scrollBottom();
+  }
+}
+sendBtn.onclick = send;
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 110) + 'px';
+});
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 700) {
+    e.preventDefault(); send();
+  }
+});
+
+// ---------- 初始化 ----------
+(async function init() {
+  await loadRobots();
+  addBubble('system', `当前角色「${currentRobot.name}」：${currentRobot.description}`);
+  try {
+    const res = await fetch('/api/history');
+    const data = await res.json();
+    for (const m of data.messages) addBubble(m.role === 'assistant' ? 'ai' : 'user', m.content);
+  } catch (e) {}
+  if (!chatEl.children.length && currentRobot.greeting) addBubble('ai', currentRobot.greeting);
+})();
+</script>
+</body>
+</html>
